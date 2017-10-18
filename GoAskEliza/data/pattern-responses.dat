@@ -1,0 +1,30 @@
+I like (.*)
+Why do you like %s?;are you sure you like %s?
+I want (.*)
+If you got %s, then what would you do?
+I need (.*)
+Why do you need %s?;Are you sure you need %s?;If you got %s, what would you do then?
+I love (.*)
+Are you sure you love %s?;Why do you love %s?;Is it possible that you don't love %s at all?;When did you start loving %s?
+Why can't I (.*)
+Why would you want to %s?;I don't know, have you really tried to %s?;Do you think you should be able to %s?
+I am (.*)
+Did you come to me because you are %s?;How long have you been %s?;How does being %s make you feel?
+How (.*)
+How do you suppose;Hmmm I think you'd be able to answer that question better than I could.
+I think (.*)
+How long have you thought %s?; Do you really think %s?;You think %s, but I sense a little doubt.
+(yes);(yeah)
+You seem very confident;Is that all you have to say about it?;Very succinct of you.;Can you elaborate a bit?
+No
+Are you sure?;Are you positive?;Interesting...;
+Is it (.*)
+Do you think it is %s?;If I told you that it probably isn't %s, how would that make you feel?;If I told you that it probably is %s, how would that make you feel?
+Can you (.*)?
+Why would you like me to %s?;Do you really want me to %s?;I can %s if you would like.;If I could %s, how would that make you feel?
+You are (.*)
+Why do you think I am %s?;Do you really think I am %s?;Perhaps you are really talking about yourself
+(father);(dad);(da)
+Tell me about your father.;Let's talk about your father.;Tell me about your relationship with your father when you were growing up.;Do you have a good relationship with your father?
+(mother);(mom);(mam);(mum);(ma)
+Tell me about your mother.;Let's talk about your mother.;Tell me about your relationship with your mother when you were young.;Do you have a good relationship with your mother now?
