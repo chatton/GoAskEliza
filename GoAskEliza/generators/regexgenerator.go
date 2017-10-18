@@ -7,28 +7,23 @@ import (
     "os"
     "bufio"
     "strings"
+    "fmt"
 )
 
 type RegexGenerator struct {
     // unexported response map of regular expressions to list of answers.
     responseMap map[*regexp.Regexp] []string
+    reflectionMap map[string] string
 }
 
 func NewRegexGenerator(responsePatternPath string) RegexGenerator {
     generator := RegexGenerator{}
     // create the map of responses to possible answers.
     responseMap := makeResponseMap(responsePatternPath)
-    generator.responseMap = responseMap
-    return generator
-}
-
-func (r RegexGenerator) GenerateAnswers(question string) []string {
-    return []string{ "One", "Two", "Three"}
-}
-
-// map used to map certain words from the question into an appropriate
-// response in the answer.
-var reflecionMap map[string] string = map[string]string{
+    
+    // map used to map certain words from the question into an appropriate
+    // response in the answer.
+   var reflectionMap map[string] string = map[string]string {
         "am": "are",
         "was": "were",
         "i": "you",
@@ -44,6 +39,71 @@ var reflecionMap map[string] string = map[string]string{
         "you": "me",
         "me": "you",
     }
+
+    generator.responseMap = responseMap
+    generator.reflectionMap = reflectionMap
+    return generator
+}
+
+func (r RegexGenerator) GenerateAnswers(question string) []string {
+    question = strings.ToLower(question) // ignore case
+    for re, possibleResponses := range r.responseMap {
+        if re.MatchString(question) {
+            questionTopic := r.getQuestionTopic(re, question)
+            returnResponses := []string{}
+            for _, response := range possibleResponses {
+                // it means the response will use the question topic in the answer and needs to be formatted.
+                if strings.Contains(response, "%s") { 
+                    // insert the question topic into the response.
+                    returnResponses = append(returnResponses, fmt.Sprintf(response, questionTopic))
+                } else {
+                    // the response doesn't need to be formatted. It is complete as is.
+                    returnResponses = append(returnResponses, response)
+                }
+            }
+            return returnResponses
+        }
+    }
+    return []string{"I don't know how to response to that."}
+}
+
+func (r RegexGenerator) getQuestionTopic(re *regexp.Regexp, question string) string {
+    match := re.FindStringSubmatch(question)
+    questionTopic := match[1] // 0 is the full string, 1 is first match.
+    questionTopic = r.substituteWords(questionTopic)
+    questionTopic = removePunctuation(questionTopic)
+    return questionTopic
+}
+
+func (r RegexGenerator) substituteWords(answer string) string {
+    allWords := strings.Split(answer, " ")
+    for index, word := range allWords{
+        // put to lower case so the capitilzation doesn't matter
+        if val, ok := r.reflectionMap[strings.ToLower(word)]; ok {
+            allWords[index] = val
+        }
+    }
+    return strings.Join(allWords, " ")
+}
+
+
+/*
+removes punction from the string, this is to make it
+so that the question returned doesn't contain unusual punctuation
+taken from the input question.
+*/
+func removePunctuation(answer string) string {
+    allChars := strings.Split(answer, "")
+    for index, char := range allChars {
+        for _, punc := range punctuation {
+            if char == punc {
+                allChars[index] = ""   
+            }
+        }
+    }
+    return strings.Join(allChars, "")
+}
+
 
 var punctuation []string = []string{"!", ",", ";", ".", "?"}
 

@@ -2,18 +2,19 @@ package main
 
 import (
     "./eliza"
-    "./eliza/answers/generator"
-    "./eliza/answers/picker"
+    "./generators"
+    "./pickers"
     "fmt"
 )
 
 func main() {
-    var g generator.AnswerGenerator // interface
-    g = generator.RegexGenerator{} // implementation
+    var g eliza.AnswerGenerator // interface
+    // implementation
+    g = generators.NewRegexGenerator("./data/pattern-responses.dat") 
 
-    var p picker.RandomPicker
-    p = picker.RandomPicker{}
+    var p eliza.AnswerPicker
+    p = pickers.RandomPicker{}
 
     e := eliza.NewEliza(g, p)
-    fmt.Println(e.GoAsk("How are you?"))
+    fmt.Println(e.GoAsk("I like waffles!"))
 }

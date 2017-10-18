@@ -5,7 +5,7 @@ import (
     "time"
 )
 
-type RandomPicker struct {}
+type RandomPicker struct {} // this implementation has no state.
 
 func (picker RandomPicker) PickAnswer(answers []string) string{
     rand.Seed(time.Now().Unix()) // seed so we don't get the same value every time

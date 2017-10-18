@@ -22,7 +22,7 @@ func (e Eliza) GoAsk(question string) string {
 
 // https://github.com/golang/go/wiki/CodeReviewComments#interfaces
 // The documentation states that interfaces belong in the package that is
-// going to use the interface type.
+// going to use the interface type, not in with the implementations.
 
 // an answer generator should be able to give back a slice of answers when given a question.
 type AnswerGenerator interface {
