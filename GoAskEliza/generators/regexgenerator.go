@@ -45,11 +45,11 @@ func NewRegexGenerator(responsePatternPath string) RegexGenerator {
     return generator
 }
 
-func (r RegexGenerator) GenerateAnswers(question string) []string {
+func (gen RegexGenerator) GenerateAnswers(question string) []string {
     question = strings.ToLower(question) // ignore case
-    for re, possibleResponses := range r.responseMap {
+    for re, possibleResponses := range gen.responseMap {
         if re.MatchString(question) {
-            questionTopic := r.getQuestionTopic(re, question)
+            questionTopic := gen.getQuestionTopic(re, question)
             returnResponses := []string{}
             for _, response := range possibleResponses {
                 // it means the response will use the question topic in the answer and needs to be formatted.
@@ -67,25 +67,24 @@ func (r RegexGenerator) GenerateAnswers(question string) []string {
     return []string{"I don't know how to response to that."}
 }
 
-func (r RegexGenerator) getQuestionTopic(re *regexp.Regexp, question string) string {
+func (gen RegexGenerator) getQuestionTopic(re *regexp.Regexp, question string) string {
     match := re.FindStringSubmatch(question)
     questionTopic := match[1] // 0 is the full string, 1 is first match.
-    questionTopic = r.substituteWords(questionTopic)
+    questionTopic = gen.substituteWords(questionTopic)
     questionTopic = removePunctuation(questionTopic)
     return questionTopic
 }
 
-func (r RegexGenerator) substituteWords(answer string) string {
-    allWords := strings.Split(answer, " ")
-    for index, word := range allWords{
+func (gen RegexGenerator) substituteWords(answer string) string {
+    allWords := strings.Split(answer, " ") // get slices of the words {"words", "in", "sentence"}
+    for index, word := range allWords {
         // put to lower case so the capitilzation doesn't matter
-        if val, ok := r.reflectionMap[strings.ToLower(word)]; ok {
-            allWords[index] = val
+        if val, ok := gen.reflectionMap[strings.ToLower(word)]; ok {
+            allWords[index] = val // substitite the value
         }
     }
-    return strings.Join(allWords, " ")
+    return strings.Join(allWords, " ") // join back into string "words in sentence"
 }
-
 
 /*
 removes punction from the string, this is to make it
@@ -105,7 +104,8 @@ func removePunctuation(answer string) string {
 }
 
 
-var punctuation []string = []string{"!", ",", ";", ".", "?"}
+// include %s to strip incase the user enters "%s" directly into the question.
+var punctuation []string = []string{"!", ",", ";", ".", "?", "%s"}
 
 
 func makeResponseMap(path string) map[*regexp.Regexp] [] string {
