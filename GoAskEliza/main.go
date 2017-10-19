@@ -13,7 +13,7 @@ func main() {
     g = generators.NewRegexGenerator("./data/pattern-responses.dat") 
 
     var p eliza.AnswerPicker
-    p = pickers.RandomPicker{}
+    p = pickers.NewRandomPicker()
 
     e := eliza.NewEliza(g, p)
     fmt.Println(e.GoAsk("I like waffles!"))
