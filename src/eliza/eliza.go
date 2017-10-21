@@ -35,11 +35,11 @@ func (e Eliza) GoAsk(question string) string {
 }
 
 func (e Eliza) Questions() []string {
-	return e.history["questions"]
+	return []string(e.history["questions"])
 }
 
 func (e Eliza) Answers() []string {
-	return e.history["answers"]
+	return []string(e.history["answers"])
 }
 
 func (e Eliza) Greet(firstTime bool) string {

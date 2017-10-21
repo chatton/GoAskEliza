@@ -83,6 +83,10 @@ func (gen RegexGenerator) GenerateAnswers(question string) []string {
 		return repeatAnswers()
 	}
 
+	// don't want to include this question in "past" questions for the default answers.
+	// so evaluate these now.
+	defaultAnswers := gen.defaultAnswers(); 
+
 	// question will now prompt repeat answers if it comes up again
 	gen.rememberQuestion(question)
 
@@ -97,7 +101,7 @@ func (gen RegexGenerator) GenerateAnswers(question string) []string {
 		}
 	}
 	// no match was found, repsond with generic answers.
-	return gen.defaultAnswers()
+	return defaultAnswers
 }
 
 func appendResponse(responses []string, response, questionTopic string) []string {
@@ -125,7 +129,7 @@ func (gen RegexGenerator) defaultAnswers() []string {
 	if gen.pastQuestions.Size() > 0 { // there is at least one past question to dig up.
 		// question that makes use of a random past question the user asked.
 		// intended to make the responses seem more like a real life conversation.
-		reflectOnPreviousQuestion := fmt.Sprintf("You asked \"%s\", let's talk some more about that.",
+		reflectOnPreviousQuestion := fmt.Sprintf("Earlier you said \"%s\", let's talk some more about that.",
 			gen.getRandomPastQuestion())
 		// give the chance that this will be brought up, not every time.
 		genericAnswers = append(genericAnswers, reflectOnPreviousQuestion)

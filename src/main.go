@@ -6,6 +6,7 @@ import (
 	"./pickers"
 	"fmt"
 	"net/http"
+	"html/template"
 )
 
 var e *eliza.Eliza
