@@ -8,7 +8,6 @@ import (
 	"net/http"
 )
 
-
 var e *eliza.Eliza
 
 func main() {
@@ -21,15 +20,23 @@ func main() {
 
 	e = eliza.NewEliza(g, p)
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		// serves up index.html when a request is made to "/"
 		http.ServeFile(w, r, "./html/index.html")
 	})
 
 	// when a request is made to /ask, the askEliza function will execute.
-	http.HandleFunc("/ask", askEliza);
+	http.HandleFunc("/ask", askEliza)
 
-	http.ListenAndServe(":9999", nil);
+	fmt.Println(e.GoAsk("I like waffles"))
+	fmt.Println(e.GoAsk("I like waffles"))
+	fmt.Println(e.GoAsk("gfdgdf"))
+	fmt.Println(e.GoAsk("gfdgdf"))
+	fmt.Println(e.GoAsk("gfdgdf"))
+	fmt.Println(e.GoAsk("gfdgdf"))
+	fmt.Println(e.GoAsk("gfdgdf"))
+
+	http.ListenAndServe(":9999", nil)
 }
 
 func hasQuesion(r *http.Request) bool {

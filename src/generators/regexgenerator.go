@@ -4,15 +4,18 @@ import (
 	// package used for regular expressions.
 	"bufio"
 	"fmt"
+	"math/rand"
 	"os"
 	"regexp"
 	"strings"
+	"time"
 )
 
 type RegexGenerator struct {
 	// unexported response map of regular expressions to list of answers.
 	responseMap   map[*regexp.Regexp][]string
 	reflectionMap map[string]string
+	pastQuestions map[string]bool
 }
 
 // include %s to strip incase the user enters "%s" directly into the question.
@@ -44,11 +47,53 @@ func NewRegexGenerator(responsePatternPath string) RegexGenerator {
 
 	generator.responseMap = responseMap
 	generator.reflectionMap = reflectionMap
+	generator.pastQuestions = make(map[string]bool)
 	return generator
+}
+
+func (gen RegexGenerator) isRepeatQuestion(question string) bool {
+	return gen.pastQuestions[question]
+}
+
+func (gen RegexGenerator) rememberQuestion(question string) {
+	gen.pastQuestions[question] = true
+}
+
+func repeatAnswers() []string {
+	return []string{
+		"Hmmm, you've asked this before.",
+		"I see you want to talk about this some more.",
+		"It's interesting that you want to talk about this again.",
+		"I find it interesting that you're talking about this again."}
+}
+
+// function to dig up a past question so that it can be used in
+// a question when no other response is better.
+func (gen RegexGenerator) getRandomPastQuestion() string {
+	rand.Seed(time.Now().UTC().UnixNano())
+	i := rand.Intn(len(gen.pastQuestions))
+	count := 0
+	for question := range gen.pastQuestions {
+		if i == count {
+			return question
+		}
+		count++
+	}
+
+	panic("should not be possible to reach here.")
 }
 
 func (gen RegexGenerator) GenerateAnswers(question string) []string {
 	question = strings.ToLower(question) // ignore case
+	if gen.isRepeatQuestion(question) {
+		// if they ask the same question, they will get a response showing
+		// that the previous question was "remembered"
+		return repeatAnswers()
+	}
+
+	// question will now prompt repeat answers if it comes up again
+	gen.rememberQuestion(question)
+
 	for re, possibleResponses := range gen.responseMap {
 		if re.MatchString(question) {
 			questionTopic := gen.getQuestionTopic(re, question)
@@ -67,17 +112,30 @@ func (gen RegexGenerator) GenerateAnswers(question string) []string {
 		}
 	}
 	// no match was found, repsond with generic answers.
-	return defaultAnswers()
+	return gen.defaultAnswers()
 }
 
-func defaultAnswers() []string {
-    // provide some answers in the case of no regex match on the question.
-	return []string{
+func (gen RegexGenerator) defaultAnswers() []string {
+	// provide some answers in the case of no regex match on the question.
+
+	// question that makes use of a random past question the user asked.
+	// intended to make the responses seem more like a real life conversation.
+	reflectOnPreviousQuestion := fmt.Sprintf("You asked \"%s\", let's talk some more about that.",
+		gen.getRandomPastQuestion())
+
+	// some generic catch all answers
+	genericAnswers := []string{
 		"I don't know how to respond to that",
 		"Hmmm interesting...",
 		"Tell me more.",
 		"Please, continue.",
-        "Could you elaborate on that?"}
+		"Could you elaborate on that?"}
+
+	if len(gen.pastQuestions) > 0 { // there is at least one past question to dig up.
+		// give the chance that this will be brought up, not every time.
+		genericAnswers = append(genericAnswers, reflectOnPreviousQuestion)
+	}
+	return genericAnswers
 }
 
 func (gen RegexGenerator) getQuestionTopic(re *regexp.Regexp, question string) string {
@@ -105,14 +163,14 @@ so that the question returned doesn't contain unusual punctuation
 taken from the input question.
 */
 func removeUnwantedCharacters(answer string) string {
-    for _, unwanted := range unwantedCharacters {
-        // replace every unwanted string with an empty string
-        // this implementation is not very efficent, O(n^m) to strip out the string.
-        // m will always be very small, so this won't result in a huge performance hit. 
-        answer = strings.Replace(answer, unwanted, "", -1)
-    }
-    return answer;
-    
+	for _, unwanted := range unwantedCharacters {
+		// replace every unwanted string with an empty string
+		// this implementation is not very efficent, O(n^m) to strip out the string.
+		// m will always be very small, so this won't result in a huge performance hit.
+		answer = strings.Replace(answer, unwanted, "", -1)
+	}
+	return answer
+
 }
 
 func makeResponseMap(path string) map[*regexp.Regexp][]string {
