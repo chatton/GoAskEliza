@@ -2,12 +2,12 @@ package generators
 
 import (
 	// package used for regular expressions.
+	"../util"
 	"bufio"
 	"fmt"
 	"os"
 	"regexp"
 	"strings"
-	"../util"
 )
 
 type RegexGenerator struct {
@@ -91,14 +91,7 @@ func (gen RegexGenerator) GenerateAnswers(question string) []string {
 			questionTopic := gen.getQuestionTopic(re, question)
 			returnResponses := []string{}
 			for _, response := range possibleResponses {
-				// it means the response will use the question topic in the answer and needs to be formatted.
-				if strings.Contains(response, "%s") {
-					// insert the question topic into the response.
-					returnResponses = append(returnResponses, fmt.Sprintf(response, questionTopic))
-				} else {
-					// the response doesn't need to be formatted. It is complete as is.
-					returnResponses = append(returnResponses, response)
-				}
+				returnResponses = appendResponse(returnResponses, response, questionTopic)
 			}
 			return returnResponses
 		}
@@ -107,13 +100,19 @@ func (gen RegexGenerator) GenerateAnswers(question string) []string {
 	return gen.defaultAnswers()
 }
 
+func appendResponse(responses []string, response, questionTopic string) []string {
+	// it means the response will use the question topic in the answer and needs to be formatted.
+	if strings.Contains(response, "%s") {
+		// insert the question topic into the response.
+		return append(responses, fmt.Sprintf(response, questionTopic))
+	} else {
+		// the response doesn't need to be formatted. It is complete as is.
+		return append(responses, response)
+	}
+}
+
 func (gen RegexGenerator) defaultAnswers() []string {
 	// provide some answers in the case of no regex match on the question.
-
-	// question that makes use of a random past question the user asked.
-	// intended to make the responses seem more like a real life conversation.
-	reflectOnPreviousQuestion := fmt.Sprintf("You asked \"%s\", let's talk some more about that.",
-		gen.getRandomPastQuestion())
 
 	// some generic catch all answers
 	genericAnswers := []string{
@@ -124,6 +123,10 @@ func (gen RegexGenerator) defaultAnswers() []string {
 		"Could you elaborate on that?"}
 
 	if gen.pastQuestions.Size() > 0 { // there is at least one past question to dig up.
+		// question that makes use of a random past question the user asked.
+		// intended to make the responses seem more like a real life conversation.
+		reflectOnPreviousQuestion := fmt.Sprintf("You asked \"%s\", let's talk some more about that.",
+			gen.getRandomPastQuestion())
 		// give the chance that this will be brought up, not every time.
 		genericAnswers = append(genericAnswers, reflectOnPreviousQuestion)
 	}
