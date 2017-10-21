@@ -28,14 +28,6 @@ func main() {
 	// when a request is made to /ask, the askEliza function will execute.
 	http.HandleFunc("/ask", askEliza)
 
-	fmt.Println(e.GoAsk("I like waffles"))
-	fmt.Println(e.GoAsk("I like waffles"))
-	fmt.Println(e.GoAsk("gfdgdf"))
-	fmt.Println(e.GoAsk("gfdgdf"))
-	fmt.Println(e.GoAsk("gfdgdf"))
-	fmt.Println(e.GoAsk("gfdgdf"))
-	fmt.Println(e.GoAsk("gfdgdf"))
-
 	http.ListenAndServe(":9999", nil)
 }
 

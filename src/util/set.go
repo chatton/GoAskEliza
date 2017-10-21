@@ -16,6 +16,18 @@ func (set *StringSet) Contains(s string)  bool {
     return ok
 }
 
+func (set *StringSet) Size() int {
+	return len(set.set)
+}
+
+func (set *StringSet) AsSlice() []string {
+	allStrings := []string{}
+	for key := range set.set {
+		allStrings = append(allStrings, key)
+	}	
+	return allStrings
+} 
+
 func NewStringSet() *StringSet {
     return &StringSet{make(map[string]bool)}
 }

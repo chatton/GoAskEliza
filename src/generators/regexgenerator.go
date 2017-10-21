@@ -9,13 +9,14 @@ import (
 	"regexp"
 	"strings"
 	"time"
+	"../util"
 )
 
 type RegexGenerator struct {
 	// unexported response map of regular expressions to list of answers.
 	responseMap   map[*regexp.Regexp][]string
 	reflectionMap map[string]string
-	pastQuestions map[string]bool
+	pastQuestions *util.StringSet
 }
 
 // include %s to strip incase the user enters "%s" directly into the question.
@@ -47,40 +48,36 @@ func NewRegexGenerator(responsePatternPath string) RegexGenerator {
 
 	generator.responseMap = responseMap
 	generator.reflectionMap = reflectionMap
-	generator.pastQuestions = make(map[string]bool)
+	generator.pastQuestions = util.NewStringSet()
 	return generator
 }
 
 func (gen RegexGenerator) isRepeatQuestion(question string) bool {
-	return gen.pastQuestions[question]
+	return gen.pastQuestions.Contains(question)
 }
 
 func (gen RegexGenerator) rememberQuestion(question string) {
-	gen.pastQuestions[question] = true
+	gen.pastQuestions.Add(question)
 }
 
 func repeatAnswers() []string {
+	// provide multiple generic responses for if the user asks a duplicate question.
 	return []string{
 		"Hmmm, you've asked this before.",
 		"I see you want to talk about this some more.",
 		"It's interesting that you want to talk about this again.",
-		"I find it interesting that you're talking about this again."}
+		"I find it interesting that you're talking about this again.",
+		"You seem to be repeating yourself.",
+		"Are you expecting a different answer to the same question?"}
 }
 
 // function to dig up a past question so that it can be used in
 // a question when no other response is better.
 func (gen RegexGenerator) getRandomPastQuestion() string {
 	rand.Seed(time.Now().UTC().UnixNano())
-	i := rand.Intn(len(gen.pastQuestions))
-	count := 0
-	for question := range gen.pastQuestions {
-		if i == count {
-			return question
-		}
-		count++
-	}
-
-	panic("should not be possible to reach here.")
+	questions := gen.pastQuestions.AsSlice()
+	i := rand.Intn(len(questions))
+	return questions[i]
 }
 
 func (gen RegexGenerator) GenerateAnswers(question string) []string {
@@ -128,10 +125,10 @@ func (gen RegexGenerator) defaultAnswers() []string {
 		"I don't know how to respond to that",
 		"Hmmm interesting...",
 		"Tell me more.",
-		"Please, continue.",
+		"Please, tell me more.",
 		"Could you elaborate on that?"}
 
-	if len(gen.pastQuestions) > 0 { // there is at least one past question to dig up.
+	if gen.pastQuestions.Size() > 0 { // there is at least one past question to dig up.
 		// give the chance that this will be brought up, not every time.
 		genericAnswers = append(genericAnswers, reflectOnPreviousQuestion)
 	}
