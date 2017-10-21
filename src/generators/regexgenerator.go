@@ -4,11 +4,9 @@ import (
 	// package used for regular expressions.
 	"bufio"
 	"fmt"
-	"math/rand"
 	"os"
 	"regexp"
 	"strings"
-	"time"
 	"../util"
 )
 
@@ -74,10 +72,7 @@ func repeatAnswers() []string {
 // function to dig up a past question so that it can be used in
 // a question when no other response is better.
 func (gen RegexGenerator) getRandomPastQuestion() string {
-	rand.Seed(time.Now().UTC().UnixNano())
-	questions := gen.pastQuestions.AsSlice()
-	i := rand.Intn(len(questions))
-	return questions[i]
+	return gen.pastQuestions.RandomValue()
 }
 
 func (gen RegexGenerator) GenerateAnswers(question string) []string {

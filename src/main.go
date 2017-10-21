@@ -31,17 +31,23 @@ func main() {
 	http.ListenAndServe(":9999", nil)
 }
 
-func hasQuesion(r *http.Request) bool {
+func hasQuestion(r *http.Request) bool {
 	return getQuestion(r) != ""
 }
 
+// helper function to get the question from the url.
 func getQuestion(r *http.Request) string {
 	return r.URL.Query().Get("question")
 }
 
+// can tell if the user has been here before if they have cookies from us.
+func usersFirstTime(r *http.Request) bool {
+	return len(r.Cookies()) == 0
+}
+
 func askEliza(w http.ResponseWriter, r *http.Request) {
 	var question string
-	if hasQuesion(r) {
+	if hasQuestion(r) {
 		question = getQuestion(r)
 		response := e.GoAsk(question)
 		fmt.Println(response)

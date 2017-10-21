@@ -1,5 +1,10 @@
 package util
 
+import (
+	"math/rand"
+	"time"
+)
+
 // I consulted this post on how to emulate a set data-strucure in go
 // https://softwareengineering.stackexchange.com/questions/177428/sets-data-structure-in-golang
 
@@ -27,6 +32,12 @@ func (set *StringSet) AsSlice() []string {
 	}	
 	return allStrings
 } 
+
+func (set *StringSet) RandomValue() string {
+	rand.Seed(time.Now().UTC().UnixNano())
+	values := set.AsSlice()
+	return values[rand.Intn(len(values))]
+}
 
 func NewStringSet() *StringSet {
     return &StringSet{make(map[string]bool)}
