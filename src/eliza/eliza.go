@@ -8,17 +8,35 @@ type Eliza struct {
     // and how you pick them.
     generator AnswerGenerator
     picker AnswerPicker
+    history map[string][]string
 }
 
 func NewEliza(generator AnswerGenerator, picker AnswerPicker) *Eliza {
-    eliza := Eliza{generator:generator, picker:picker}
+    eliza := Eliza{generator:generator, picker:picker, history:make(map[string][]string)}
+    eliza.history["questions"] = []string{}
+    eliza.history["answers"] = []string{}
     return &eliza
 } 
 
 func (e Eliza) GoAsk(question string) string {
     answers := e.generator.GenerateAnswers(question)
     return e.picker.PickAnswer(answers)
-} 
+}
+
+func (e Eliza) Quesions() []string {
+    return e.history["questions"]
+}
+
+func (e Eliza) Answers() []string {
+    return e.history["answers"]
+}
+
+func (e Eliza) Greet(firstTime bool) string {
+    if firstTime {
+        return "Hi, my name is Eliza, it's nice to meet you."
+    }
+    return "Welcome back."
+}
 
 // https://github.com/golang/go/wiki/CodeReviewComments#interfaces
 // The documentation states that interfaces belong in the package that is

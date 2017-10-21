@@ -33,7 +33,7 @@ func main() {
 }
 
 func hasQuesion(r *http.Request) bool {
-	return r.URL.Query().Get("question") != ""
+	return getQuestion(r) != ""
 }
 
 func getQuestion(r *http.Request) string {
