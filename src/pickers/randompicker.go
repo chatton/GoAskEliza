@@ -3,32 +3,13 @@ package pickers
 import (
     "math/rand"
     "time"
+    "../util"
 )
-
-// I consulted this post on how to emulate a set data-strucure in go
-// https://softwareengineering.stackexchange.com/questions/177428/sets-data-structure-in-golang
-
-type StringSet struct { // mimic a set using a map of string -> bool
-    set map[string]bool
-}
-
-func (set *StringSet) Add(s string)  {
-    set.set[s] = true
-}
-
-func (set *StringSet) Contains(s string)  bool {
-    _, ok := set.set[s] // don't care about the value, just if it was there.
-    return ok
-}
-
-func NewStringSet() *StringSet {
-    return &StringSet{make(map[string]bool)}
-}
 
 type RandomPicker struct {
     // keep track of all the questions already picked.
     // this way we can prioritize the other questions, to seem more "real"
-    pickedAnswers *StringSet
+    pickedAnswers *util.StringSet
 } 
 
 func (picker RandomPicker) PickAnswer(answers []string) string{
@@ -44,5 +25,5 @@ func (picker RandomPicker) PickAnswer(answers []string) string{
 }
 
 func NewRandomPicker() *RandomPicker {
-    return &RandomPicker{pickedAnswers:NewStringSet()}
+    return &RandomPicker{pickedAnswers:util.NewStringSet()}
 }
