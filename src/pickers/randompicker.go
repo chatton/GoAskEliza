@@ -12,7 +12,7 @@ type RandomPicker struct {
 	pickedAnswers *util.StringSet
 }
 
-func (picker RandomPicker) PickAnswer(answers []string) string {
+func (picker *RandomPicker) PickAnswer(answers []string) string {
 	rand.Seed(time.Now().Unix())     // seed so we don't get the same value every time
 	index := rand.Intn(len(answers)) // index between 0 -> No. answers
 	answer := answers[index]

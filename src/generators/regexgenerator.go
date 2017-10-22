@@ -26,14 +26,15 @@ type RegexGenerator struct {
 	responses []Response
 	reflectionMap map[string]string
 	pastQuestions *util.StringSet
+	firstQuestion bool
 }
 
 // include %s to strip incase the user enters "%s" directly into the question.
 var unwantedCharacters []string = []string{"!", ",", ";", ".", "?", "%s"}
 
-func NewRegexGenerator(responsePatternPath string) RegexGenerator {
-	generator := RegexGenerator{}
-
+func NewRegexGenerator(responsePatternPath string) *RegexGenerator {
+	generator := &RegexGenerator{}
+	generator.firstQuestion = true
 
 	generator.responses = makeResponses(responsePatternPath)
 
@@ -96,11 +97,11 @@ func makeResponses(path string) []Response {
 	return responses
 }
 
-func (gen RegexGenerator) isRepeatQuestion(question string) bool {
+func (gen *RegexGenerator) isRepeatQuestion(question string) bool {
 	return gen.pastQuestions.Contains(question)
 }
 
-func (gen RegexGenerator) rememberQuestion(question string) {
+func (gen *RegexGenerator) rememberQuestion(question string) {
 	gen.pastQuestions.Add(question)
 }
 
@@ -117,11 +118,39 @@ func repeatAnswers() []string {
 
 // function to dig up a past question so that it can be used in
 // a question when no other response is better.
-func (gen RegexGenerator) getRandomPastQuestion() string {
+func (gen *RegexGenerator) getRandomPastQuestion() string {
 	return gen.pastQuestions.RandomValue()
 }
 
-func (gen RegexGenerator) GenerateAnswers(question string) []string {
+func questionIsGreeting(question string) bool{
+	greetingPatterns := []string{"(?i)(.*)hello(.*)",
+						"(?i)(.*)good ([morning|afternoon|evening])+(.*)", 
+						"(?i)(.*)how are you(.*)"}
+	for _, pattern := range greetingPatterns {
+		re := regexp.MustCompile(pattern)
+		if re.MatchString(question) {
+			return true
+		}
+	}
+	return false
+}
+
+func rudeAnswers() []string{
+	return []string {
+		"Normally my clients start by saying \"hello\".",
+		"No hello?",
+		"I don't get a hello?"}
+}
+
+func (gen *RegexGenerator) GenerateAnswers(question string) []string {
+
+	if gen.firstQuestion {
+		gen.firstQuestion = false
+		if !questionIsGreeting(question) {
+			return rudeAnswers()
+		}
+	}
+
 	question = strings.ToLower(question) // ignore case
 	if gen.isRepeatQuestion(question) {
 		// if they ask the same question, they will get a response showing
@@ -161,7 +190,7 @@ func makeResponse(response, questionTopic string) string {
 	}
 }
 
-func (gen RegexGenerator) defaultAnswers() []string {
+func (gen *RegexGenerator) defaultAnswers() []string {
 	// provide some answers in the case of no regex match on the question.
 
 	// some generic catch all answers
@@ -183,7 +212,7 @@ func (gen RegexGenerator) defaultAnswers() []string {
 	return genericAnswers
 }
 
-func (gen RegexGenerator) getQuestionTopic(re *regexp.Regexp, question string) string {
+func (gen *RegexGenerator) getQuestionTopic(re *regexp.Regexp, question string) string {
 	match := re.FindStringSubmatch(question)
 	questionTopic := match[1] // 0 is the full string, 1 is first match.
 	questionTopic = gen.substituteWords(questionTopic)
@@ -191,7 +220,7 @@ func (gen RegexGenerator) getQuestionTopic(re *regexp.Regexp, question string) s
 	return questionTopic
 }
 
-func (gen RegexGenerator) substituteWords(answer string) string {
+func (gen *RegexGenerator) substituteWords(answer string) string {
 	allWords := strings.Split(answer, " ") // get slices of the words {"words", "in", "sentence"}
 	for index, word := range allWords {
 		// put to lower case so the capitilzation doesn't matter

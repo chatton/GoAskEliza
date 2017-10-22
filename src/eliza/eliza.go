@@ -18,15 +18,15 @@ func NewEliza(generator AnswerGenerator, picker AnswerPicker) *Eliza {
 	return &eliza
 }
 
-func (e Eliza) saveQuestion(question string) {
+func (e *Eliza) saveQuestion(question string) {
     e.history["questions"] = append(e.history["questions"], question)
 }
 
-func (e Eliza) saveAnswer(answer string) {
+func (e *Eliza) saveAnswer(answer string) {
     e.history["answers"] = append(e.history["answers"], answer)
 }
 
-func (e Eliza) GoAsk(question string) string {
+func (e *Eliza) GoAsk(question string) string {
     e.saveQuestion(question)
 	answers := e.generator.GenerateAnswers(question)
     answer := e.picker.PickAnswer(answers)
@@ -34,15 +34,15 @@ func (e Eliza) GoAsk(question string) string {
 	return answer
 }
 
-func (e Eliza) Questions() []string {
+func (e *Eliza) Questions() []string {
 	return []string(e.history["questions"])
 }
 
-func (e Eliza) Answers() []string {
+func (e *Eliza) Answers() []string {
 	return []string(e.history["answers"])
 }
 
-func (e Eliza) Greet(firstTime bool) string {
+func (e *Eliza) Greet(firstTime bool) string {
 	if firstTime {
 		return "Hi, my name is Eliza, it's nice to meet you."
 	}

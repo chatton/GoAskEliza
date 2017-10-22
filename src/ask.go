@@ -8,7 +8,7 @@ import "os"
 
 
 /*
-short tool to test the functionality of
+small tool to test the functionality of
 Eliza. Can pass in a question and get back a single response.
 */
 
@@ -24,6 +24,7 @@ func main(){
 		fmt.Println("usage: \"go run ask.go <question>\"")
 		os.Exit(0)
 	}
+	e.GoAsk("good morning") // avoid getting the "rude" answer for not greeting every time.
 	question := os.Args[1]
 	fmt.Println(e.GoAsk(question))
 
