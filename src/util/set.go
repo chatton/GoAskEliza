@@ -39,6 +39,10 @@ func (set *StringSet) RandomValue() string {
 	return values[rand.Intn(len(values))]
 }
 
+func (set *StringSet) IsEmpty() bool {
+	return set.Size() == 0
+}
+
 func NewStringSet() *StringSet {
 	return &StringSet{make(map[string]bool)}
 }

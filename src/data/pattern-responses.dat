@@ -1,3 +1,6 @@
+# can add comments by starting the line with a '#'
+# we want to put the more specific pattern matches towards the start of the file.
+# priority will be given to patterns at the top of the file.
 I like (.*)
 Why do you like %s?;are you sure you like %s?
 I want (.*)

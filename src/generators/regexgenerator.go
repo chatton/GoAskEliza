@@ -1,18 +1,29 @@
 package generators
 
 import (
-	// package used for regular expressions.
+	// for the StringSet struct
 	"../util"
+	// for file IO
 	"bufio"
 	"fmt"
+	// os for file management
 	"os"
+	// package used for regular expressions.
 	"regexp"
+	// for string manipulation
 	"strings"
 )
 
+type Response struct {
+	// the regex pattern that matches the question 
+	re *regexp.Regexp
+	// answers to that question
+	responses []string
+}
+
 type RegexGenerator struct {
-	// unexported response map of regular expressions to list of answers.
-	responseMap   map[*regexp.Regexp][]string
+	// no exported fields.
+	responses []Response
 	reflectionMap map[string]string
 	pastQuestions *util.StringSet
 }
@@ -22,12 +33,13 @@ var unwantedCharacters []string = []string{"!", ",", ";", ".", "?", "%s"}
 
 func NewRegexGenerator(responsePatternPath string) RegexGenerator {
 	generator := RegexGenerator{}
-	// create the map of responses to possible answers.
-	responseMap := makeResponseMap(responsePatternPath)
+
+
+	generator.responses = makeResponses(responsePatternPath)
 
 	// map used to map certain words from the question into an appropriate
 	// response in the answer.
-	var reflectionMap map[string]string = map[string]string{
+	generator.reflectionMap = map[string]string{
 		"am":     "are",
 		"was":    "were",
 		"i":      "you",
@@ -43,11 +55,45 @@ func NewRegexGenerator(responsePatternPath string) RegexGenerator {
 		"you":    "me",
 		"me":     "you",
 	}
-
-	generator.responseMap = responseMap
-	generator.reflectionMap = reflectionMap
 	generator.pastQuestions = util.NewStringSet()
 	return generator
+}
+
+func makeResponses(path string) []Response {
+	// map that will hold regex expressions and a list of possible responses
+	// that will be read in from a file.
+	// resultMap := make(map[*regexp.Regexp][]string)
+	
+	// use a slice of responses to maintain order, higher priority
+	// is given to the earlier ones. More specific patterns should be put at the start of the file.
+	responses := make([]Response, 0)
+	file, err := os.Open(path)
+
+	if err != nil { // something went wrong opening the file
+		panic(err) // can't continue if the file isn't found.
+	}
+
+	defer file.Close() // close the file after this function finishes executing.
+
+	// read the file line by line
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() { // keep reading each line until we hit the end of the file.
+		line := scanner.Text()
+		if strings.HasPrefix(line, "#") { // allow comments in the response-pattenrns file.
+			continue // by continuing, the scanner.Scan() condition in the loop will execute and skip this line.
+		}
+		allPatterns := strings.Split(line, ";") // patterns on first line
+		scanner.Scan()                                    // responses on the next line
+		allResponses := strings.Split(scanner.Text(), ";")
+
+		for _, pattern := range allPatterns {
+			pattern = "(?i)" + pattern        // make every pattern case insensitive
+
+			re := regexp.MustCompile(pattern) // throws an error if the pattern doesn't compile.
+			responses = append(responses, Response{re:re, responses:allResponses})
+		}
+	}
+	return responses
 }
 
 func (gen RegexGenerator) isRepeatQuestion(question string) bool {
@@ -90,28 +136,28 @@ func (gen RegexGenerator) GenerateAnswers(question string) []string {
 	// question will now prompt repeat answers if it comes up again
 	gen.rememberQuestion(question)
 
-	for re, possibleResponses := range gen.responseMap {
-		if re.MatchString(question) {
-			questionTopic := gen.getQuestionTopic(re, question)
-			returnResponses := []string{}
-			for _, response := range possibleResponses {
-				returnResponses = appendResponse(returnResponses, response, questionTopic)
+	for _, response := range gen.responses { // looking through all possible responses.
+		if response.re.MatchString(question) { // if the question matches a response regex pattern.
+			questionTopic := gen.getQuestionTopic(response.re, question) // extract the "topic" from the question
+			returnResponses := make([]string, len(response.responses)) // make our new slice to hold the returned responses.
+			for index, resp := range response.responses { // go through the possible return values for that response
+				returnResponses[index] = makeResponse(resp, questionTopic)
 			}
-			return returnResponses
+			return returnResponses // give back a slice of fully formed answers to the question.
 		}
 	}
 	// no match was found, repsond with generic answers.
 	return defaultAnswers
 }
 
-func appendResponse(responses []string, response, questionTopic string) []string {
+func makeResponse(response, questionTopic string) string {
 	// it means the response will use the question topic in the answer and needs to be formatted.
 	if strings.Contains(response, "%s") {
 		// insert the question topic into the response.
-		return append(responses, fmt.Sprintf(response, questionTopic))
+		return fmt.Sprintf(response, questionTopic)
 	} else {
 		// the response doesn't need to be formatted. It is complete as is.
-		return append(responses, response)
+		return response
 	}
 }
 
@@ -126,7 +172,7 @@ func (gen RegexGenerator) defaultAnswers() []string {
 		"Please, tell me more.",
 		"Could you elaborate on that?"}
 
-	if gen.pastQuestions.Size() > 0 { // there is at least one past question to dig up.
+	if !gen.pastQuestions.IsEmpty() { // there is at least one past question to dig up.
 		// question that makes use of a random past question the user asked.
 		// intended to make the responses seem more like a real life conversation.
 		reflectOnPreviousQuestion := fmt.Sprintf("Earlier you said \"%s\", let's talk some more about that.",
@@ -169,32 +215,4 @@ func removeUnwantedCharacters(answer string) string {
 		answer = strings.Replace(answer, unwanted, "", -1)
 	}
 	return answer
-
-}
-
-func makeResponseMap(path string) map[*regexp.Regexp][]string {
-	// map that will hold regex expressions and a list of possible responses
-	// that will be read in from a file.
-	resultMap := make(map[*regexp.Regexp][]string)
-	file, err := os.Open(path)
-
-	if err != nil { // something went wrong opening the file
-		panic(err) // can't continue if the file isn't found.
-	}
-
-	defer file.Close() // close the file after this function finishes executing.
-
-	// read the file line by line
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() { // keep reading each line until we hit the end of the file.
-		allPatterns := strings.Split(scanner.Text(), ";") // patterns on first line
-		scanner.Scan()                                    // responses on the next line
-		allResponses := strings.Split(scanner.Text(), ";")
-		for _, pattern := range allPatterns {
-			pattern = "(?i)" + pattern        // make every pattern case insensitive
-			re := regexp.MustCompile(pattern) // throws an error if the pattern doesn't compile.
-			resultMap[re] = allResponses
-		}
-	}
-	return resultMap
 }
