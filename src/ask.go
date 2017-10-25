@@ -13,7 +13,7 @@ Eliza. Can pass in a question and get back a single response.
 
 func main() {
 	g := generators.NewRegexGenerator("./data/pattern-responses.dat")
-	p := pickers.NewRandomPicker()
+	p := pickers.NewPrefersNewPicker()
 
 	e := eliza.NewEliza(g, p)
 	if len(os.Args) < 2 {

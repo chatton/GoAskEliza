@@ -39,6 +39,7 @@ var unwantedCharacters []string
 var genericAnswers []string
 var rudeAnswers []string
 var repeatAnswers []string
+var greetingPatterns []string
 
 func NewRegexGenerator(responsePatternPath string) *RegexGenerator {
 	generator := &RegexGenerator{}
@@ -51,6 +52,7 @@ func NewRegexGenerator(responsePatternPath string) *RegexGenerator {
 	genericAnswers = readLines("./data/generic-responses.dat")
 	rudeAnswers = readLines("./data/rude-answers.dat")
 	repeatAnswers = readLines("./data/repeat-answers.dat")
+	greetingPatterns = readLines("./data/greeting-patterns.dat")
 
 	generator.responses = makeResponses(responsePatternPath)
 
@@ -75,9 +77,7 @@ func makeReflectionMap() map[string]string {
 // holding one non-comment non-blank line.
 func readLines(path string) []string {
 	lines := []string{}
-
 	file, err := os.Open(path)
-
 	if err != nil { // something went wrong opening the file
 		// fail fast - if a single file isn't found it needs to be fixed.
 		panic(err) // can't continue if the file isn't found.
@@ -129,7 +129,7 @@ func (gen *RegexGenerator) getRandomPastQuestion() string {
 }
 
 func questionIsGreeting(question string) bool {
-	greetingPatterns := readLines("./data/greeting-patterns.dat")
+
 	for _, pattern := range greetingPatterns {
 		re := regexp.MustCompile(pattern)
 		if re.MatchString(question) {
