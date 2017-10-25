@@ -1,0 +1,11 @@
+# These are the characters that will be stripped out of the questions.
+# We want them removed so we don't end up with odd punctuation in the response
+# Eliza gives back that was taken from the question.
+
+!
+,
+;
+.
+?
+# include %s to strip incase the user enters "%s" directly into the question.
+%s

@@ -1,0 +1,6 @@
+# these patterns determine what a "greeting" is
+# Eliza will not be impressed if you don't greet her first.
+
+(?i)hello
+(?i)good ([morning|afternoon|evening])+
+(?i)how are you

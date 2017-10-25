@@ -1,0 +1,7 @@
+# these will be given as generic responses if
+# the user didn't initiate the conversation with a "greeting"
+# like "hello", "good morning" etc.
+
+Normally my clients start by saying 'hello'.
+No hello?"
+I don't get a hello?

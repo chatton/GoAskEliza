@@ -1,0 +1,9 @@
+# these responses will be given back if the user asks
+# a question they already asked before.
+
+Hmmm, you've asked this before.
+I see you want to talk about this some more.
+It's interesting that you want to talk about this again.
+I find it interesting that you're talking about this again.
+You seem to be repeating yourself.
+Are you expecting a different answer to the same question?

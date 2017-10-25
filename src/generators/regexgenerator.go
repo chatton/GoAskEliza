@@ -14,63 +14,72 @@ import (
 	"strings"
 )
 
+// A Response contains an regexp and then a slice of strings
+// which are the possible responses once a question matches the pattern
+// of the regexp.
 type Response struct {
-	// the regex pattern that matches the question 
+	// the regex pattern that matches the question
 	re *regexp.Regexp
 	// answers to that question
 	responses []string
 }
 
+// RegexGenerator IS-AN answer generator. It makes use of regular
+// expressions to match the pattern in a given question, and returns
+// a list of possible responses.
 type RegexGenerator struct {
 	// no exported fields.
-	responses []Response
+	responses     []Response
 	reflectionMap map[string]string
 	pastQuestions *util.StringSet
 	firstQuestion bool
 }
 
-// include %s to strip incase the user enters "%s" directly into the question.
-var unwantedCharacters []string = []string{"!", ",", ";", ".", "?", "%s"}
+var unwantedCharacters []string
+var genericAnswers []string
+var rudeAnswers []string
+var repeatAnswers []string
 
 func NewRegexGenerator(responsePatternPath string) *RegexGenerator {
 	generator := &RegexGenerator{}
 	generator.firstQuestion = true
 
+	// store all these responses in memory. If you want to edit the files,
+	// the program will need to be re-built and run again.
+	// File IO is just done once, not every time the values are queried.
+	unwantedCharacters = readLines("./data/unwanted.dat")
+	genericAnswers = readLines("./data/generic-responses.dat")
+	rudeAnswers = readLines("./data/rude-answers.dat")
+	repeatAnswers = readLines("./data/repeat-answers.dat")
+
 	generator.responses = makeResponses(responsePatternPath)
 
 	// map used to map certain words from the question into an appropriate
 	// response in the answer.
-	generator.reflectionMap = map[string]string{
-		"am":     "are",
-		"was":    "were",
-		"i":      "you",
-		"i'd":    "you would",
-		"i've":   "you have",
-		"i'll":   "you will",
-		"my":     "your",
-		"are":    "am",
-		"you've": "I have",
-		"you'll": "I will",
-		"your":   "my",
-		"yours":  "mine",
-		"you":    "me",
-		"me":     "you",
-	}
+	generator.reflectionMap = makeReflectionMap()
 	generator.pastQuestions = util.NewStringSet()
 	return generator
 }
 
-func makeResponses(path string) []Response {
-	// map that will hold regex expressions and a list of possible responses
-	// that will be read in from a file.
-	// resultMap := make(map[*regexp.Regexp][]string)
-	
-	// use a slice of responses to maintain order, higher priority
-	// is given to the earlier ones. More specific patterns should be put at the start of the file.
-	responses := make([]Response, 0)
+func makeReflectionMap() map[string]string {
+	lines := readLines("./data/reflectionmap.dat")
+	reflectionMap := make(map[string]string)
+	for _, line := range lines {
+		keyVal := strings.Split(line, ";") // {"i;you", "i'd;you would" ... }
+		reflectionMap[keyVal[0]] = keyVal[1]
+	}
+	return reflectionMap
+}
+
+// function that will take in a file and give back a slice of strings, each
+// holding one non-comment non-blank line.
+func readLines(path string) []string {
+	lines := []string{}
+
 	file, err := os.Open(path)
 
 	if err != nil { // something went wrong opening the file
+		// fail fast - if a single file isn't found it needs to be fixed.
 		panic(err) // can't continue if the file isn't found.
 	}
 
@@ -78,20 +87,27 @@ func makeResponses(path string) []Response {
 
 	// read the file line by line
 	scanner := bufio.NewScanner(file)
-	for scanner.Scan() { // keep reading each line until we hit the end of the file.
+	for scanner.Scan() {
 		line := scanner.Text()
-		if strings.HasPrefix(line, "#") { // allow comments in the response-pattenrns file.
-			continue // by continuing, the scanner.Scan() condition in the loop will execute and skip this line.
+		if strings.HasPrefix(line, "#") || len(strings.TrimSpace(line)) == 0 { // allow comments in the response-pattenrns file.
+			continue // by continuing, the scanner.Scan() statement in the loop will execute and skip this line.
 		}
-		allPatterns := strings.Split(line, ";") // patterns on first line
-		scanner.Scan()                                    // responses on the next line
-		allResponses := strings.Split(scanner.Text(), ";")
+		lines = append(lines, line)
+	}
 
+	return lines
+}
+
+func makeResponses(path string) []Response {
+	allLines := readLines(path)
+	responses := make([]Response, 0)
+	for i := 0; i < len(allLines); i += 2 {
+		allPatterns := strings.Split(allLines[i], ";")    // patterns on first line
+		allResponses := strings.Split(allLines[i+1], ";") // responses on the next line.
 		for _, pattern := range allPatterns {
 			pattern = "(?i)" + pattern        // make every pattern case insensitive
-
 			re := regexp.MustCompile(pattern) // throws an error if the pattern doesn't compile.
-			responses = append(responses, Response{re:re, responses:allResponses})
+			responses = append(responses, Response{re: re, responses: allResponses})
 		}
 	}
 	return responses
@@ -105,27 +121,15 @@ func (gen *RegexGenerator) rememberQuestion(question string) {
 	gen.pastQuestions.Add(question)
 }
 
-func repeatAnswers() []string {
-	// provide multiple generic responses for if the user asks a duplicate question.
-	return []string{
-		"Hmmm, you've asked this before.",
-		"I see you want to talk about this some more.",
-		"It's interesting that you want to talk about this again.",
-		"I find it interesting that you're talking about this again.",
-		"You seem to be repeating yourself.",
-		"Are you expecting a different answer to the same question?"}
-}
-
 // function to dig up a past question so that it can be used in
 // a question when no other response is better.
 func (gen *RegexGenerator) getRandomPastQuestion() string {
-	return gen.pastQuestions.RandomValue()
+	val, _ := gen.pastQuestions.RandomValue() // can ignore error here because we only call this function after we know there will be past results.
+	return val
 }
 
-func questionIsGreeting(question string) bool{
-	greetingPatterns := []string{"(?i)(.*)hello(.*)",
-						"(?i)(.*)good ([morning|afternoon|evening])+(.*)", 
-						"(?i)(.*)how are you(.*)"}
+func questionIsGreeting(question string) bool {
+	greetingPatterns := readLines("./data/greeting-patterns.dat")
 	for _, pattern := range greetingPatterns {
 		re := regexp.MustCompile(pattern)
 		if re.MatchString(question) {
@@ -135,19 +139,13 @@ func questionIsGreeting(question string) bool{
 	return false
 }
 
-func rudeAnswers() []string{
-	return []string {
-		"Normally my clients start by saying \"hello\".",
-		"No hello?",
-		"I don't get a hello?"}
-}
-
+// GenerateAnswers belongs to eliza.AnswerGenerator interface.
 func (gen *RegexGenerator) GenerateAnswers(question string) []string {
 
 	if gen.firstQuestion {
 		gen.firstQuestion = false
 		if !questionIsGreeting(question) {
-			return rudeAnswers()
+			return rudeAnswers
 		}
 	}
 
@@ -155,21 +153,24 @@ func (gen *RegexGenerator) GenerateAnswers(question string) []string {
 	if gen.isRepeatQuestion(question) {
 		// if they ask the same question, they will get a response showing
 		// that the previous question was "remembered"
-		return repeatAnswers()
+		return repeatAnswers
 	}
 
 	// don't want to include this question in "past" questions for the default answers.
 	// so evaluate these now.
-	defaultAnswers := gen.defaultAnswers(); 
+	defaultAnswers := gen.defaultAnswers()
 
-	// question will now prompt repeat answers if it comes up again
-	gen.rememberQuestion(question)
+	if !questionIsGreeting(question) { // don't want to "remember" a greeting.
+		// end with with Eliza saying "Earlier you said "hello" let's talk more about that"
+		// question will now prompt repeat answers if it comes up again
+		gen.rememberQuestion(question)
+	}
 
 	for _, response := range gen.responses { // looking through all possible responses.
 		if response.re.MatchString(question) { // if the question matches a response regex pattern.
 			questionTopic := gen.getQuestionTopic(response.re, question) // extract the "topic" from the question
-			returnResponses := make([]string, len(response.responses)) // make our new slice to hold the returned responses.
-			for index, resp := range response.responses { // go through the possible return values for that response
+			returnResponses := make([]string, len(response.responses))   // make our new slice to hold the returned responses.
+			for index, resp := range response.responses {                // go through the possible return values for that response
 				returnResponses[index] = makeResponse(resp, questionTopic)
 			}
 			return returnResponses // give back a slice of fully formed answers to the question.
@@ -184,32 +185,24 @@ func makeResponse(response, questionTopic string) string {
 	if strings.Contains(response, "%s") {
 		// insert the question topic into the response.
 		return fmt.Sprintf(response, questionTopic)
-	} else {
-		// the response doesn't need to be formatted. It is complete as is.
-		return response
 	}
+	// the response doesn't need to be formatted. It is complete as is.
+	return response
 }
 
 func (gen *RegexGenerator) defaultAnswers() []string {
 	// provide some answers in the case of no regex match on the question.
 
-	// some generic catch all answers
-	genericAnswers := []string{
-		"I don't know how to respond to that",
-		"Hmmm interesting...",
-		"Tell me more.",
-		"Please, tell me more.",
-		"Could you elaborate on that?"}
-
-	if !gen.pastQuestions.IsEmpty() { // there is at least one past question to dig up.
+	returnAnswers := []string(genericAnswers) // don't want to modify the defaults. So we copy and add.
+	if !gen.pastQuestions.IsEmpty() {         // there is at least one past question to dig up.
 		// question that makes use of a random past question the user asked.
 		// intended to make the responses seem more like a real life conversation.
 		reflectOnPreviousQuestion := fmt.Sprintf("Earlier you said \"%s\", let's talk some more about that.",
 			gen.getRandomPastQuestion())
 		// give the chance that this will be brought up, not every time.
-		genericAnswers = append(genericAnswers, reflectOnPreviousQuestion)
+		returnAnswers = append(returnAnswers, reflectOnPreviousQuestion)
 	}
-	return genericAnswers
+	return returnAnswers
 }
 
 func (gen *RegexGenerator) getQuestionTopic(re *regexp.Regexp, question string) string {
@@ -234,14 +227,15 @@ func (gen *RegexGenerator) substituteWords(answer string) string {
 /*
 removes punction from the string, this is to make it
 so that the question returned doesn't contain unusual punctuation
-taken from the input question.
+taken from the input question. Eg. "Why do you like waffles.?" should be
+"Why do you like waffles?"
 */
 func removeUnwantedCharacters(answer string) string {
 	for _, unwanted := range unwantedCharacters {
 		// replace every unwanted string with an empty string
 		// this implementation is not very efficent, O(n^m) to strip out the string.
 		// m will always be very small, so this won't result in a huge performance hit.
-		answer = strings.Replace(answer, unwanted, "", -1)
+		answer = strings.Replace(answer, unwanted, "", -1) // -1 to specify all occurrences.
 	}
 	return answer
 }

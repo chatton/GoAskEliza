@@ -1,0 +1,19 @@
+# these words will be mapped in the response
+# e.g. "I like waffles" -> "Why do you like waffles".
+# e.g. "I'd have liked to" -> "You would have liked to"
+# e.g. "I was there" -> "You were there"
+
+am;are
+was;were
+i;you
+i'd;you would
+i've;you have
+i'll;you will
+my;your
+are;am
+you've;I have
+you'll;I will
+your;my
+yours;mine
+you;me
+me;you

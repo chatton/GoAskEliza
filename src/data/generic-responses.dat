@@ -1,0 +1,9 @@
+# these are replies that are given back if
+# there was no exact match with any of the regular expression patterns
+# from pattern-responses.dat
+
+I don't know how to respond to that
+Hmmm interesting...
+Tell me more.
+Please, tell me more.
+Could you elaborate on that?

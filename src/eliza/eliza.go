@@ -11,6 +11,8 @@ type Eliza struct {
 	history map[string][]string
 }
 
+// NewEliza creates a new Eliza instance with teh given answer generator
+// and answer picker.
 func NewEliza(generator AnswerGenerator, picker AnswerPicker) *Eliza {
 	eliza := Eliza{generator: generator, picker: picker, history: make(map[string][]string)}
 	eliza.history["questions"] = []string{}
@@ -19,46 +21,58 @@ func NewEliza(generator AnswerGenerator, picker AnswerPicker) *Eliza {
 }
 
 func (e *Eliza) saveQuestion(question string) {
-    e.history["questions"] = append(e.history["questions"], question)
+	e.appendToList("questions", question)
 }
 
 func (e *Eliza) saveAnswer(answer string) {
-    e.history["answers"] = append(e.history["answers"], answer)
+	e.appendToList("answers", answer)
 }
 
+func (e *Eliza) appendToList(key, val string) {
+	e.history[key] = append(e.history[key], val)
+}
+
+// GoAsk is the "main" exported function Eliza is needed for.
+// it takes a single question in string format, and gives back
+// a single response also in string format.
 func (e *Eliza) GoAsk(question string) string {
-    e.saveQuestion(question)
+	e.saveQuestion(question)
 	answers := e.generator.GenerateAnswers(question)
-    answer := e.picker.PickAnswer(answers)
-    e.saveAnswer(answer)
+	answer := e.picker.PickAnswer(answers)
+	e.saveAnswer(answer)
 	return answer
 }
 
+// Questions returns a list of all asked questions
 func (e *Eliza) Questions() []string {
 	return []string(e.history["questions"])
 }
 
+// Answers returns a list of all given answers.
 func (e *Eliza) Answers() []string {
 	return []string(e.history["answers"])
 }
 
+// Greet returns a general greeting as a string.
+// A boolean value is given to indicate if this is the "first time"
+// someone is talking to her.
 func (e *Eliza) Greet(firstTime bool) string {
 	if firstTime {
 		return "Hi, my name is Eliza, it's nice to meet you."
 	}
 	return "Welcome back. Let's continue."
 }
- 
+
 // https://github.com/golang/go/wiki/CodeReviewComments#interfaces
 // The documentation states that interfaces belong in the package that is
 // going to use the interface type, not in with the implementations.
 
-// an answer generator should be able to give back a slice of answers when given a question.
+// AnswerGenerator should be able to give back a slice of answers when given a question.
 type AnswerGenerator interface {
 	GenerateAnswers(question string) []string
 }
 
-// answer picker is in charge of picking a response out of a list of answers.
+// AnswerPicker is in charge of picking a response out of a list of answers.
 type AnswerPicker interface {
 	PickAnswer(answers []string) string
 }
