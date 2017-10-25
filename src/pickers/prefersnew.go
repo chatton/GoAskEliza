@@ -17,17 +17,22 @@ type PrefersNewPicker struct {
 }
 
 func (picker *PrefersNewPicker) PickAnswer(answers []string) string {
-	index := rand.Intn(len(answers)) // index between 0 -> No. answers
-	answer := answers[index]
+	// I had the idea to shuffle the answer list and pick from the start
+	// I found this post https://stackoverflow.com/questions/12264789/shuffle-array-in-go
+	// and adapted it to come to this solution.
 
-	numSamePicks := 0
-	for picker.pickedAnswers.Contains(answer) || numSamePicks == len(answers) { // already picked this answer
-		numSamePicks++
-		index = rand.Intn(len(answers)) // pick another one
-		answer = answers[index]         // can still be the same number, this just reduces
-		// the likeyhood of a same answer being picked.
+	indices := rand.Perm(len(answers)) // get all possible indices of the answer slice. e.g. [0,2,1]
+	var answer string
+	// here index IS the "value"
+	for _, index := range indices {
+		// pick out that answer
+		answer = answers[index]
+		// an answer we haven't seen before.
+		if !picker.pickedAnswers.Contains(answer) {
+			break
+		}
 	}
-
+	// remember the answer
 	picker.pickedAnswers.Add(answer)
 	return answer
 }
