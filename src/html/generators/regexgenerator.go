@@ -2,6 +2,9 @@ package generators
 
 import (
 	// for the StringSet struct
+	"errors"
+	"math/rand"
+
 	"../util"
 	// for file IO
 	"bufio"
@@ -53,7 +56,6 @@ func NewRegexGenerator(responsePatternPath string) *RegexGenerator {
 	rudeAnswers = readLines("./data/rude-answers.dat")
 	repeatAnswers = readLines("./data/repeat-answers.dat")
 	greetingPatterns = readLines("./data/greeting-patterns.dat")
-
 	generator.responses = makeResponses(responsePatternPath)
 
 	// map used to map certain words from the question into an appropriate
@@ -73,6 +75,11 @@ func makeReflectionMap() map[string]string {
 	return reflectionMap
 }
 
+func getRandomElementFromSet(set *util.StringSet) string {
+	values := set.Values()
+	return values[rand.Intn(len(values))
+}
+
 // function that will take in a file and give back a slice of strings, each
 // holding one non-comment non-blank line.
 func readLines(path string) []string {
@@ -89,8 +96,8 @@ func readLines(path string) []string {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
-		if strings.HasPrefix(line, "#") || len(strings.TrimSpace(line)) == 0 { // allow comments in the response-pattenrns file.
-			continue // by continuing, the scanner.Scan() statement in the loop will execute and skip this line.
+		if strings.HasPrefix(line, "#") || len(strings.TrimSpace(line)) == 0 { // allow comments and whitespace in the files.
+			continue // by continuing, the scanner.Scan() statement in the loop will execute and skip this line of the file.
 		}
 		lines = append(lines, line)
 	}
@@ -124,8 +131,7 @@ func (gen *RegexGenerator) rememberQuestion(question string) {
 // function to dig up a past question so that it can be used in
 // a question when no other response is better.
 func (gen *RegexGenerator) getRandomPastQuestion() string {
-	val, _ := gen.pastQuestions.RandomValue() // can ignore error here because we only call this function after we know there will be past results.
-	return val
+	return getRandomElsementFromSet(gen.pastQuestions)
 }
 
 func questionIsGreeting(question string) bool {

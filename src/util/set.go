@@ -25,30 +25,26 @@ func (set *StringSet) Contains(s string) bool {
 	return ok
 }
 
-func (set *StringSet) Remove(s string) {
+func (set *StringSet) Remove(s string) error {
+	if !set.Contains(s) {
+		return errors.New("Element: " + s + " does not exist in the set.")
+	}
 	delete(set.set, s) // delete instead of setting to false, potential memory leak keeping values that "aren't there"
+	return nil         // no error, the element was removed successfully
 }
 
 func (set *StringSet) Size() int {
 	return len(set.set)
 }
 
-func (set *StringSet) AsSlice() []string {
-	allStrings := []string{}
+func (set *StringSet) Values() []string {
+	allStrings := make([]string, len(set.set))
+	index := 0
 	for key := range set.set {
-		allStrings = append(allStrings, key)
+		allStrings[index] = key
+		index++
 	}
 	return allStrings
-}
-
-func (set *StringSet) RandomValue() (string, error) {
-	if set.IsEmpty() {
-		return "", errors.New("Set is empty")
-	}
-
-	rand.Seed(time.Now().UTC().UnixNano())
-	values := set.AsSlice()
-	return values[rand.Intn(len(values))], nil
 }
 
 func (set *StringSet) IsEmpty() bool {
@@ -56,6 +52,7 @@ func (set *StringSet) IsEmpty() bool {
 }
 
 func NewStringSet(initialVals ...string) *StringSet {
+	rand.Seed(time.Now().UTC().UnixNano())
 	set := &StringSet{make(map[string]bool)}
 	for _, val := range initialVals {
 		set.Add(val)
