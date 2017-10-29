@@ -23,10 +23,8 @@ func main() {
 	e.GoAsk("good morning") // avoid getting the "rude" answer for not greeting every time.
 	question := os.Args[1]
 	fmt.Println(e.GoAsk(question))
-	fmt.Println(e.GoAsk(question))
-	fmt.Println("Questions: ")
-	fmt.Println(e.Questions())
-	fmt.Println("Answers: ")
-	fmt.Println(e.Answers())
+	fmt.Println(fmt.Sprintf("Questions: %s", e.Questions()))
+
+	fmt.Println(fmt.Sprintf("Answers: %s", e.Answers()))
 
 }

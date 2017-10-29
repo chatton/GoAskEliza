@@ -25,6 +25,10 @@ func (set *StringSet) Contains(s string) bool {
 	return ok
 }
 
+func (set *StringSet) Remove(s string) {
+	delete(set.set, s) // delete instead of setting to false, potential memory leak keeping values that "aren't there"
+}
+
 func (set *StringSet) Size() int {
 	return len(set.set)
 }
@@ -51,6 +55,10 @@ func (set *StringSet) IsEmpty() bool {
 	return set.Size() == 0
 }
 
-func NewStringSet() *StringSet {
-	return &StringSet{make(map[string]bool)}
+func NewStringSet(initialVals ...string) *StringSet {
+	set := &StringSet{make(map[string]bool)}
+	for _, val := range initialVals {
+		set.Add(val)
+	}
+	return set
 }

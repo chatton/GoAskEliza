@@ -99,8 +99,8 @@ func readLines(path string) []string {
 }
 
 func makeResponses(path string) []Response {
-	allLines := readLines(path)
-	responses := make([]Response, 0)
+	allLines := readLines(path)      //read in slice of all lines in the file.
+	responses := make([]Response, 0) // make a slice of Responses to hold the responses, don't know how many there will be so start at size = 0
 	for i := 0; i < len(allLines); i += 2 {
 		allPatterns := strings.Split(allLines[i], ";")    // patterns on first line
 		allResponses := strings.Split(allLines[i+1], ";") // responses on the next line.
