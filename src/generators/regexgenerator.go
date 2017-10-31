@@ -1,11 +1,9 @@
 package generators
 
 import (
-	// for the StringSet struct
-	"errors"
+	
 	"math/rand"
-
-	"../util"
+	"../util" // for the StringSet struct
 	// for file IO
 	"bufio"
 	"fmt"
@@ -77,7 +75,7 @@ func makeReflectionMap() map[string]string {
 
 func getRandomElementFromSet(set *util.StringSet) string {
 	values := set.Values()
-	return values[rand.Intn(len(values))
+	return values[rand.Intn(len(values))]
 }
 
 // function that will take in a file and give back a slice of strings, each
@@ -131,7 +129,7 @@ func (gen *RegexGenerator) rememberQuestion(question string) {
 // function to dig up a past question so that it can be used in
 // a question when no other response is better.
 func (gen *RegexGenerator) getRandomPastQuestion() string {
-	return getRandomElsementFromSet(gen.pastQuestions)
+	return getRandomElementFromSet(gen.pastQuestions)
 }
 
 func questionIsGreeting(question string) bool {
