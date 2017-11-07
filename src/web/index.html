@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <title>Eliza Chatbot</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="style.css">
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -19,35 +19,20 @@
       <ul class="list-group" id="conversation">
           <li class="list-group-item eliza_message"><p align="left">Hello Eliza</p></li>
           <li class="list-group-item user_message"><p align="left">Hello it's nice to meet you. What would you like to talk about today?</p></li>
-          <li class="list-group-item eliza_message"><p align="left">I love waffles.</p></li>
-          <li class="list-group-item user_message"><p align="left">Why do you love waffles?</p></li>
-          <li class="list-group-item eliza_message"><p align="left">Because they're amazeballs.</p></li>
-          <li class="list-group-item user_message"><p align="left">Why do you think they're amazeballs?</p></li>
-          <li class="list-group-item eliza_message"><p align="left">They're super yummy and delicious that's why!</p></li>
-          <li class="list-group-item user_message"><p align="left">Hello it's nice to meet you. What would you like to talk about today?</p></li>
-          <li class="list-group-item eliza_message"><p align="left">I love waffles.</p></li>
-          <li class="list-group-item user_message"><p align="left">Why do you love waffles?</p></li>
-          <li class="list-group-item eliza_message"><p align="left">Because they're amazeballs.</p></li>
-          <li class="list-group-item user_message"><p align="left">Why do you think they're amazeballs?</p></li>
-          <li class="list-group-item eliza_message"><p align="left">They're super yummy and delicious that's why!</p></li>
-          <li class="list-group-item user_message"><p align="left">Hello it's nice to meet you. What would you like to talk about today?</p></li>
-          <li class="list-group-item eliza_message"><p align="left">I love waffles.</p></li>
-          <li class="list-group-item user_message"><p align="left">Why do you love waffles?</p></li>
-          <li class="list-group-item eliza_message"><p align="left">Because they're amazeballs.</p></li>
-          <li class="list-group-item user_message"><p align="left">Why do you think they're amazeballs?</p></li>
-          <li class="list-group-item eliza_message"><p align="left">They're super yummy and delicious that's why!</p></li>
         </ul>
 
 
     <div class="fixed-bottom bg-dark footer">
         <div class="container input-group-lg">
-          <form>
-              <input type="text" class="form-control" id="user-input" placeholder="Talk to Eliza">
+          <form> 
+              <input type="text" name="user-input" class="form-control" id="user-input" placeholder="Talk to Eliza">
               <small class="form-text text-muted">Don't forget to say hi first!</small>
           </form>
+          <button name="btn" id="btn">Click me!</button>
       </div>
     </div>
 
+    <script src ="script.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
