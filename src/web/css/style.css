@@ -1,0 +1,24 @@
+ul {
+    margin-left: 10%;
+    margin-right: 10%;
+    padding-bottom: 10%;
+    overflow: hidden;
+}
+
+h2 {
+    margin-left: 45%;
+}
+
+body {
+    height: 10%;
+}
+
+li.eliza_message {
+    background-color : #401F7C;
+    color: white;
+}
+
+li.user_message {
+    background-color: #2A40A7;
+    color: white;
+}
