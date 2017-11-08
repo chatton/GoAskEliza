@@ -22,22 +22,13 @@ func (server *server) Start() {
 	http.ListenAndServe(":8080", nil)
 }
 
-/*
-func serveIndex(w http.ResponseWriter, r *http.Request){
-	http.ServeFile(w,r, "./web/index.html")
-}
-*/
 func (server *server) handleAsk(w http.ResponseWriter, r *http.Request) {
-	//r.ParseForm()
-	fmt.Println(r)
 	if userHasInput(r) {
 		userQuestion := r.FormValue("question") // the value gets passed in in the input-form.
 		fmt.Println(userQuestion)
 		answer := server.el.GoAsk(userQuestion) // passes the user question to the Eliza struct to get an answer for the question.
-		fmt.Println(answer)
 		fmt.Fprintf(w, answer)
 	}
-	//serveIndex(w,r)
 }
 
 func userHasInput(r *http.Request) bool {

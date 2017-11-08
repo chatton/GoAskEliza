@@ -1,6 +1,8 @@
 # can add comments by starting the line with a '#'
 # we want to put the more specific pattern matches towards the start of the file.
 # priority will be given to patterns at the top of the file.
+name is (.*);name's (.*)
+Hello %s, it's nice to meet you.;It's nice to meet you, %s
 (sorry)
 There's really no need to say sorry;There's no need to apologize.
 I like (.*)
@@ -15,7 +17,7 @@ Why can't I (.*)
 Why would you want to %s?;I don't know, have you really tried to %s?;Do you think you should be able to %s?
 I am (.*);I'm (.*)
 Did you come to me because you are %s?;How long have you been %s?;How does being %s make you feel?;Why do you think you are %s?;Have you always been %s?
-(.*) you(.*)
+(.*)you(.*)
 We're talking about you, not me.;Did you come here to talk about me?
 How (.*)
 How do you suppose;Hmmm I think you'd be able to answer that question better than I could.;How do you think?
