@@ -2,7 +2,7 @@ const keyCodes = {
     ENTER : 13
 }
 
-$('#user-input').on('keypress', function(e) {
+$('#user-input').on('keyup keypress', function(e) {
     // found method to supress the default behaviour of the enter key here.
     // https://stackoverflow.com/questions/11235622/jquery-disable-form-submit-on-enter
     var keyCode = e.keyCode;
@@ -11,10 +11,16 @@ $('#user-input').on('keypress', function(e) {
     }
 
     e.preventDefault(); // default behaviour is refreshing the page, which will reset the list and lose the converstaion.
+    
     const userInput = document.getElementById("user-input");
     const question = userInput.value;
+    
+    userInput.value = ""; // wipe the text box clean.
+    if(question.trim() === ""){
+        return; // user doesn't actually have a question, don't send anything.
+    }
 
-    document.getElementById("user-input").value = ""; // wipe the text box clean.
+   
 
     const request = new XMLHttpRequest();
     const params = "question=" + question;

@@ -5,7 +5,7 @@
 
 (goodbye);(bye$);(quit)
 Goodbye, it was nice to talk to you;It was nice talking with you, goodbye.;That will be $300, thank you.
-(grew up)
+(grew up);(childhood);(growing up)
 What was life like when you were growing up?;What did you want to be when you were growing up?
 We should (.*)
 Why should we %s?;Are you sure we should %s?;Hmmm, why should we %s?
