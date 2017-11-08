@@ -42,8 +42,9 @@ function addListItem(speaker, text){
     const list = document.getElementById("conversation");
     const htmlString = "<li class=\"list-group-item " + speaker + "\"><p align=\"left\">" + text + "</p></li>"
     list.insertAdjacentHTML("beforeend", htmlString);
-
+    
     // scroll down to see the newest messages any time the list is added.
+    // found this solition here https://stackoverflow.com/questions/11715646/scroll-automatically-to-the-bottom-of-the-page
     window.scrollTo(0, document.body.scrollHeight);
 }
 
