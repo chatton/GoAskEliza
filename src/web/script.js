@@ -2,13 +2,13 @@
 
 
 var list = document.getElementById("conversation");
-
 var btn = document.getElementById("btn");
+
 
 btn.addEventListener("click", function(){
     var userInput = document.getElementById("user-input");
-    document.getElementById("user-input").value = "";
     var question = userInput.value;
+    document.getElementById("user-input").value = "";
     var request = new XMLHttpRequest();
     var params = "question=" + question;
     request.open("POST", "http://localhost:8080/ask", true);
@@ -19,16 +19,13 @@ btn.addEventListener("click", function(){
             addListItem("user_message", question);
             addListItem("eliza_message", response);
         }
- 
-        
     }
     request.send(params);
 });
 
 
 function addListItem(speaker, text){
-    var htmlString = "";
-    htmlString += "<li class=\"list-group-item " + speaker + "\"><p align=\"left\">" + text + "</p></li>"
+    var htmlString = "<li class=\"list-group-item " + speaker + "\"><p align=\"left\">" + text + "</p></li>"
     list.insertAdjacentHTML("beforeend", htmlString);
 }
 

@@ -1,12 +1,12 @@
 package eliza
 
 import (
-	"net/http"
 	"fmt"
+	"net/http"
 	"strings"
 )
 
-type server struct{
+type server struct {
 	el *Eliza
 }
 
@@ -16,19 +16,21 @@ func NewServer(el *Eliza) *server {
 	return server
 }
 
-func (server *server) Start(){
+func (server *server) Start() {
 	http.HandleFunc("/ask", server.handleAsk)
-	http.Handle("/", http.FileServer(http.Dir("web")))
+	http.Handle("/", http.FileServer(http.Dir("./web")))
 	http.ListenAndServe(":8080", nil)
 }
+
 /*
 func serveIndex(w http.ResponseWriter, r *http.Request){
 	http.ServeFile(w,r, "./web/index.html")
 }
 */
 func (server *server) handleAsk(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-	if userHasInput(r) { 
+	//r.ParseForm()
+	fmt.Println(r)
+	if userHasInput(r) {
 		userQuestion := r.FormValue("question") // the value gets passed in in the input-form.
 		fmt.Println(userQuestion)
 		answer := server.el.GoAsk(userQuestion) // passes the user question to the Eliza struct to get an answer for the question.
