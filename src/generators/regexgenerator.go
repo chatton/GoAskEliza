@@ -53,7 +53,7 @@ func NewRegexGenerator(responsePatternPath string) *RegexGenerator {
 	genericAnswers = readLines("./data/generic-responses.dat")
 	rudeAnswers = readLines("./data/rude-answers.dat")
 	repeatAnswers = readLines("./data/repeat-answers.dat")
-	greetingPatterns = readLines("./data/greeting-patterns.dat")
+	greetingPatterns = makePatternsCaseInsensitive(readLines("./data/greeting-patterns.dat"))
 	generator.responses = makeResponses(responsePatternPath)
 
 	// map used to map certain words from the question into an appropriate
@@ -61,6 +61,14 @@ func NewRegexGenerator(responsePatternPath string) *RegexGenerator {
 	generator.reflectionMap = makeReflectionMap()
 	generator.pastQuestions = util.NewStringSet()
 	return generator
+}
+
+func makePatternsCaseInsensitive(patterns []string) []string {
+	caseInsensitive := make([]string, len(patterns))
+	for index, pattern := range patterns {
+		caseInsensitive[index] = "(?i)" + pattern
+	}
+	return caseInsensitive
 }
 
 func makeReflectionMap() map[string]string {
@@ -94,13 +102,17 @@ func readLines(path string) []string {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
-		if strings.HasPrefix(line, "#") || len(strings.TrimSpace(line)) == 0 { // allow comments and whitespace in the files.
+		if lineIsComment(line) {  // skip comments.
 			continue // by continuing, the scanner.Scan() statement in the loop will execute and skip this line of the file.
 		}
 		lines = append(lines, line)
 	}
 
 	return lines
+}
+
+func lineIsComment(line string) bool { 
+	return strings.HasPrefix(line, "#") || len(strings.TrimSpace(line)) == 0
 }
 
 func makeResponses(path string) []Response {
@@ -110,7 +122,7 @@ func makeResponses(path string) []Response {
 		allPatterns := strings.Split(allLines[i], ";")    // patterns on first line
 		allResponses := strings.Split(allLines[i+1], ";") // responses on the next line.
 		for _, pattern := range allPatterns {
-			pattern = "(?i)" + pattern        // make every pattern case insensitive
+			pattern =  "(?i)" + pattern // make pattern case insensitive.
 			re := regexp.MustCompile(pattern) // throws an error if the pattern doesn't compile.
 			responses = append(responses, Response{re: re, responses: allResponses})
 		}
@@ -243,3 +255,5 @@ func removeUnwantedCharacters(answer string) string {
 	}
 	return answer
 }
+
+

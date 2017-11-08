@@ -2,11 +2,14 @@ ul {
     margin-left: 10%;
     margin-right: 10%;
     padding-bottom: 10%;
-    overflow: hidden;
 }
 
 h2 {
     margin-left: 45%;
+}
+
+div.hidden {
+    overflow: hidden;
 }
 
 body {

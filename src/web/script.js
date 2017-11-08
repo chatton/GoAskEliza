@@ -14,7 +14,7 @@ $('#user-input').on('keyup keypress', function(e) {
     
     const userInput = document.getElementById("user-input");
     const question = userInput.value;
-    
+
     userInput.value = ""; // wipe the text box clean.
     if(question.trim() === ""){
         return; // user doesn't actually have a question, don't send anything.
@@ -42,5 +42,8 @@ function addListItem(speaker, text){
     const list = document.getElementById("conversation");
     const htmlString = "<li class=\"list-group-item " + speaker + "\"><p align=\"left\">" + text + "</p></li>"
     list.insertAdjacentHTML("beforeend", htmlString);
+
+    // scroll down to see the newest messages any time the list is added.
+    window.scrollTo(0, document.body.scrollHeight);
 }
 

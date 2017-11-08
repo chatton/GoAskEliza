@@ -61,7 +61,7 @@ Tell me about your mother.;Let's talk about your mother.;Tell me about your rela
 Are you in a rush?;Are you in a hurry?;Don't worry about time right now.
 I'm worried about (.*)
 Why are you worried about %s?;What makes you worried about %s?
-(Hello);(\shi\s);(^hi\s);(\shi$);(^hi$)
+(Hello);(\shi\s);(^hi\s);(\shi$);(^hi$);(hey)
 Hello, shall we begin?;Hi, how are you?
 (Eliza)
 I'm glad you remembered my name.;So, you remembered by name.

@@ -1,11 +1,13 @@
 # these patterns determine what a "greeting" is
 # Eliza will not be impressed if you don't greet her first.
 
-(?i)hello
-(?i)good ([morning|afternoon|evening])+
-(?i)how are you
-(?i)name is
-(?i)name's
-(?i)^hi\s
-(?i)\shi$
-(?i)\shi\s
+hello
+good ([morning|afternoon|evening])+
+how are you
+name is
+name's
+^hi\s
+\shi$
+\shi\s
+^hi$
+hey
