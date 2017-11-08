@@ -1,15 +1,16 @@
-var list = document.getElementById("conversation");
-var btn = document.getElementById("btn");
-
-keyCodes = {
+const keyCodes = {
     ENTER : 13
 }
 
-document.addEventListener("keypress", function(e){
-    if(e.keyCode != keyCodes.ENTER){
-        return; // we want to ignore all keypresses other than enter.
+$('#user-input').on('keypress', function(e) {
+    // found method to supress the default behaviour of the enter key here.
+    // https://stackoverflow.com/questions/11235622/jquery-disable-form-submit-on-enter
+    var keyCode = e.keyCode;
+    if(keyCode !== keyCodes.ENTER){
+        return; // ignore any other keypress.
     }
 
+    e.preventDefault(); // default behaviour is refreshing the page, which will reset the list and lose the converstaion.
     const userInput = document.getElementById("user-input");
     const question = userInput.value;
 
@@ -31,16 +32,8 @@ document.addEventListener("keypress", function(e){
     request.send(params);
 });
 
-// found method to supress the default behaviour of the enter key here.
-// https://stackoverflow.com/questions/11235622/jquery-disable-form-submit-on-enter
-$('#user-input').on('keyup keypress', function(e) {
-    var keyCode = e.keyCode || e.which;
-    if (keyCode === keyCodes.ENTER) { 
-        e.preventDefault(); // default behaviour is refreshing the page, which will reset the list and lose the converstaion.
-    }
-});
-
 function addListItem(speaker, text){
+    const list = document.getElementById("conversation");
     const htmlString = "<li class=\"list-group-item " + speaker + "\"><p align=\"left\">" + text + "</p></li>"
     list.insertAdjacentHTML("beforeend", htmlString);
 }

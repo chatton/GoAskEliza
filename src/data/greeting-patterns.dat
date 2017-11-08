@@ -4,3 +4,8 @@
 (?i)hello
 (?i)good ([morning|afternoon|evening])+
 (?i)how are you
+(?i)name is
+(?i)name's
+(?i)^hi\s
+(?i)\shi$
+(?i)\shi\s

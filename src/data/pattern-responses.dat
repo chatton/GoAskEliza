@@ -1,8 +1,30 @@
 # can add comments by starting the line with a '#'
 # we want to put the more specific pattern matches towards the start of the file.
 # priority will be given to patterns at the top of the file.
+# empty lines are ignored.
+
+(goodbye);(bye$);(quit)
+Goodbye, it was nice to talk to you;It was nice talking with you, goodbye.;That will be $300, thank you.
+(grew up)
+What was life like when you were growing up?;What did you want to be when you were growing up?
+We should (.*)
+Why should we %s?;Are you sure we should %s?;Hmmm, why should we %s?
+I should (.*)
+Why do you think you should %s?;Should you really %s?;Oh? You think you should %s?
+she's (.*);she is (.*)
+Why do you think she's %s?;Can you think of any reason she is %s?;How long as she been %s?
+he's (.*); he is (.*)
+Why do you think he's %s?;Can you think of any reason he is %s?;How long has he been %s?
+Because (.*)
+Is that the real reason?;Do you really think that's why?;How can you be sure?
+Are you (.*)
+Does it matter if I am %s?;Would you prefer if I was %s?;Would you prefer if I wasn't %s?;Maybe I am.;Maybe I'm not
+I want to be able to (.*)
+How long have you wanted to be able to %s?;Are you sure you want to be able to %s?
 name is (.*);name's (.*)
 Hello %s, it's nice to meet you.;It's nice to meet you, %s
+(thank you);(thanks)
+You're very welcome.;It was no trouble at all.
 (sorry)
 There's really no need to say sorry;There's no need to apologize.
 I like (.*)
@@ -17,8 +39,6 @@ Why can't I (.*)
 Why would you want to %s?;I don't know, have you really tried to %s?;Do you think you should be able to %s?
 I am (.*);I'm (.*)
 Did you come to me because you are %s?;How long have you been %s?;How does being %s make you feel?;Why do you think you are %s?;Have you always been %s?
-(.*)you(.*)
-We're talking about you, not me.;Did you come here to talk about me?
 How (.*)
 How do you suppose;Hmmm I think you'd be able to answer that question better than I could.;How do you think?
 I think (.*)
@@ -41,7 +61,7 @@ Tell me about your mother.;Let's talk about your mother.;Tell me about your rela
 Are you in a rush?;Are you in a hurry?;Don't worry about time right now.
 I'm worried about (.*)
 Why are you worried about %s?;What makes you worried about %s?
-(Hello)
+(Hello);(\shi\s);(^hi\s);(\shi$);(^hi$)
 Hello, shall we begin?;Hi, how are you?
 (Eliza)
 I'm glad you remembered my name.;So, you remembered by name.
@@ -53,3 +73,5 @@ I hate (.*)
 Why do you hate %s?;Do you really hate %s?;Are you sure you hate %s?;How do you feel about hating %s?
 good ([morning|evening|afternoon]+)
 good %s to you too.
+(you)
+We're talking about you, not me.;Did you come here to talk about me?
