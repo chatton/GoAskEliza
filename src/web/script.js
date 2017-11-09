@@ -2,6 +2,24 @@ const keyCodes = {
     ENTER : 13
 }
 
+
+$(document).ready( function(){
+    
+    const request = new XMLHttpRequest();
+    request.open("GET", "http://localhost:8080/history", true)
+    request.onreadystatechange = function(){
+        if(request.readyState === XMLHttpRequest.DONE) {
+            var response = request.responseText; // the history is returned in json format.
+            const history = JSON.parse(response); 
+            for(var i = 0; i < history.questions.length; i++){ // add all the past questions to maintain the state of the conversation.
+                addListItem("user_message", history.questions[i]);
+                addListItem("eliza_message", history.answers[i]);
+            }
+        }
+    }
+    request.send(null);
+});
+
 $('#user-input').on('keyup keypress', function(e) {
     // found method to supress the default behaviour of the enter key here.
     // https://stackoverflow.com/questions/11235622/jquery-disable-form-submit-on-enter
@@ -13,18 +31,18 @@ $('#user-input').on('keyup keypress', function(e) {
     e.preventDefault(); // default behaviour is refreshing the page, which will reset the list and lose the converstaion.
     
     const userInput = document.getElementById("user-input");
-    const question = userInput.value;
+    const question = userInput.value.trim(); // remove all white space from either side of string.
 
     userInput.value = ""; // wipe the text box clean.
-    if(question.trim() === ""){
+    if(question === ""){
         return; // user doesn't actually have a question, don't send anything.
     }
 
    
-
+    // there's actually a question to send to Eliza.
     const request = new XMLHttpRequest();
-    const params = "question=" + question;
-    request.open("POST", "http://localhost:8080/ask", true);
+    
+    request.open("POST", "http://localhost:8080/ask", true); // open the connection
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     request.onreadystatechange = function(){
         if(request.readyState === XMLHttpRequest.DONE) {
@@ -35,6 +53,10 @@ $('#user-input').on('keyup keypress', function(e) {
             }, 1500); // add a delay to make it look like Eliza is "typing" her message. instead of instantly displaying it.
         }
     }
+
+    // add the question as a POST parameter.
+    const params = "question=" + question; 
+    // send the actual request.
     request.send(params);
 });
 
