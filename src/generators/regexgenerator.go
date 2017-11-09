@@ -1,8 +1,8 @@
 package generators
 
 import (
-	
 	"math/rand"
+
 	"../util" // for the StringSet struct
 	// for file IO
 	"bufio"
@@ -102,7 +102,7 @@ func readLines(path string) []string {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
-		if lineIsComment(line) {  // skip comments.
+		if lineIsComment(line) { // skip comments.
 			continue // by continuing, the scanner.Scan() statement in the loop will execute and skip this line of the file.
 		}
 		lines = append(lines, line)
@@ -111,7 +111,7 @@ func readLines(path string) []string {
 	return lines
 }
 
-func lineIsComment(line string) bool { 
+func lineIsComment(line string) bool {
 	return strings.HasPrefix(line, "#") || len(strings.TrimSpace(line)) == 0
 }
 
@@ -122,7 +122,7 @@ func makeResponses(path string) []Response {
 		allPatterns := strings.Split(allLines[i], ";")    // patterns on first line
 		allResponses := strings.Split(allLines[i+1], ";") // responses on the next line.
 		for _, pattern := range allPatterns {
-			pattern =  "(?i)" + pattern // make pattern case insensitive.
+			pattern = "(?i)" + pattern        // make pattern case insensitive.
 			re := regexp.MustCompile(pattern) // throws an error if the pattern doesn't compile.
 			responses = append(responses, Response{re: re, responses: allResponses})
 		}
@@ -223,6 +223,9 @@ func (gen *RegexGenerator) defaultAnswers() []string {
 
 func (gen *RegexGenerator) getQuestionTopic(re *regexp.Regexp, question string) string {
 	match := re.FindStringSubmatch(question)
+	if len(match) == 1 {
+		return "" // no capture is needed
+	}
 	questionTopic := match[1] // 0 is the full string, 1 is first match.
 	questionTopic = gen.substituteWords(questionTopic)
 	questionTopic = removeUnwantedCharacters(questionTopic)
@@ -255,5 +258,3 @@ func removeUnwantedCharacters(answer string) string {
 	}
 	return answer
 }
-
-

@@ -4,17 +4,17 @@ const keyCodes = {
 
 
 $(document).ready( function(){
-    
     const request = new XMLHttpRequest();
     request.open("GET", "http://localhost:8080/history", true)
     request.onreadystatechange = function(){
         if(request.readyState === XMLHttpRequest.DONE) {
             var response = request.responseText; // the history is returned in json format.
             const history = JSON.parse(response); 
+
             for(var i = 0; i < history.Questions.length; i++){ // add all the past questions to maintain the state of the conversation.
                 addListItem("user_message", history.Questions[i]);
                 addListItem("eliza_message", history.Answers[i]);
-            }
+            }            
         }
     }
     request.send(null);

@@ -6,8 +6,5 @@ good ([morning|afternoon|evening])+
 how are you
 name is
 name's
-^hi\s
-\shi$
-\shi\s
-^hi$
+\bhi\b
 hey

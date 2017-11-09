@@ -2,10 +2,15 @@
 # we want to put the more specific pattern matches towards the start of the file.
 # priority will be given to patterns at the top of the file.
 # empty lines are ignored.
-
-(goodbye);(bye$);(quit)
+robot
+I don't know what you're talking about.;Robot? Maybe you need to see a therapist.
+died;dead
+I'm sorry for your loss.;I'm sorry to hear that, was it hard for you?;It's not easy losing somebody, would you like to talk about it?
+(all your base are belong to us)
+You have no chance to survive make your time.
+goodbye;bye$;quit
 Goodbye, it was nice to talk to you;It was nice talking with you, goodbye.;That will be $300, thank you.
-(grew up);(childhood);(growing up)
+grew up;childhood;growing up
 What was life like when you were growing up?;What did you want to be when you were growing up?
 We should (.*)
 Why should we %s?;Are you sure we should %s?;Hmmm, why should we %s?
@@ -23,9 +28,9 @@ I want to be able to (.*)
 How long have you wanted to be able to %s?;Are you sure you want to be able to %s?
 name is (.*);name's (.*)
 Hello %s, it's nice to meet you.;It's nice to meet you, %s
-(thank you);(thanks)
+thank you;thanks
 You're very welcome.;It was no trouble at all.
-(sorry)
+sorry
 There's really no need to say sorry;There's no need to apologize.
 I like (.*)
 Why do you like %s?;are you sure you like %s?
@@ -61,7 +66,7 @@ Tell me about your mother.;Let's talk about your mother.;Tell me about your rela
 Are you in a rush?;Are you in a hurry?;Don't worry about time right now.
 I'm worried about (.*)
 Why are you worried about %s?;What makes you worried about %s?
-(Hello);(\shi\s);(^hi\s);(\shi$);(^hi$);(hey)
+(Hello);(\bhi\b);(hey)
 Hello, shall we begin?;Hi, how are you?
 (Eliza)
 I'm glad you remembered my name.;So, you remembered by name.
@@ -69,9 +74,11 @@ I feel (.*)
 Can you tell me why you feel %s?;Tell me more about these feelings.;How long have you felt %s?
 (.*)\?
 Why do you ask that?;What made you ask me that?;How would you expect me to answer?
-I hate (.*)
+I hate (.*);I loath (.*);I dislike (.*)
 Why do you hate %s?;Do you really hate %s?;Are you sure you hate %s?;How do you feel about hating %s?
 good ([morning|evening|afternoon]+)
-good %s to you too.
-(you)
+good %s to you too.;It's a lovely %s isn't it?
+\byou\b
 We're talking about you, not me.;Did you come here to talk about me?
+!+$
+Oh, you seem a little excited.;Excited are we?
