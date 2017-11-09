@@ -11,9 +11,9 @@ $(document).ready( function(){
         if(request.readyState === XMLHttpRequest.DONE) {
             var response = request.responseText; // the history is returned in json format.
             const history = JSON.parse(response); 
-            for(var i = 0; i < history.questions.length; i++){ // add all the past questions to maintain the state of the conversation.
-                addListItem("user_message", history.questions[i]);
-                addListItem("eliza_message", history.answers[i]);
+            for(var i = 0; i < history.Questions.length; i++){ // add all the past questions to maintain the state of the conversation.
+                addListItem("user_message", history.Questions[i]);
+                addListItem("eliza_message", history.Answers[i]);
             }
         }
     }

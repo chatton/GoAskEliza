@@ -1,6 +1,7 @@
 package eliza
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -8,6 +9,10 @@ import (
 
 type server struct {
 	el *Eliza
+}
+
+type History struct {
+	Answers, Questions []string
 }
 
 func NewServer(el *Eliza) *server {
@@ -33,24 +38,14 @@ func (server *server) handleAsk(w http.ResponseWriter, r *http.Request) {
 
 func (server *server) handleHistory(w http.ResponseWriter, r *http.Request) {
 	answers := server.el.Answers()
-	answersList := make([]string, 0)
-
-	for _, answer := range answers {
-		answersList = append(answersList, "\""+answer+"\"")
-	}
-	answersStr := "[" + strings.Join(answersList, ",") + "]"
-
 	questions := server.el.Questions()
-	questionList := make([]string, 0)
 
-	for _, question := range questions {
-		questionList = append(questionList, "\""+question+"\"")
+	history := History{answers, questions}
+	historyJson, err := json.Marshal(history)
+	if err != nil {
+		fmt.Println(err)
 	}
-
-	questionsStr := "[" + strings.Join(questionList, ",") + "]"
-
-	json := fmt.Sprintf("{\"questions\":%s, \"answers\":%s }", questionsStr, answersStr)
-	fmt.Fprintf(w, json)
+	fmt.Fprintf(w, "%s", historyJson)
 }
 
 func userHasQuestion(r *http.Request) bool {
