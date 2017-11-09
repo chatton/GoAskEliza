@@ -40,6 +40,8 @@ func (server *server) handleHistory(w http.ResponseWriter, r *http.Request) {
 	answers := server.el.Answers()
 	questions := server.el.Questions()
 
+	// I consulted this article on how to use json.Marshal correctly
+	// https://golangcode.com/json-encode-an-array-of-objects/
 	history := History{answers, questions}
 	historyJson, err := json.Marshal(history)
 	if err != nil {
