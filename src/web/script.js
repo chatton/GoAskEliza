@@ -2,22 +2,21 @@ const keyCodes = {
     ENTER : 13
 }
 
+const BASE_URL = "http://localhost:8080/"
+
+function endPoint(end){
+    return BASE_URL + end;
+}
 
 $(document).ready( function(){
-    const request = new XMLHttpRequest();
-    request.open("GET", "http://localhost:8080/history", true)
-    request.onreadystatechange = function(){
-        if(request.readyState === XMLHttpRequest.DONE) {
-            var response = request.responseText; // the history is returned in json format.
-            const history = JSON.parse(response); 
-
-            for(var i = 0; i < history.Questions.length; i++){ // add all the past questions to maintain the state of the conversation.
-                addListItem("user_message", history.Questions[i]);
-                addListItem("eliza_message", history.Answers[i]);
-            }            
-        }
-    }
-    request.send(null);
+    // send GET request using jQuery and ajax.
+    $.get(endPoint("history"), function(data){
+        const history = JSON.parse(data); 
+        for(var i = 0; i < history.Questions.length; i++){ // add all the past questions to maintain the state of the conversation.
+            addListItem("user_message", history.Questions[i]);
+            addListItem("eliza_message", history.Answers[i]);
+        }    
+    })
 });
 
 $('#user-input').on('keyup keypress', function(e) {
@@ -38,26 +37,20 @@ $('#user-input').on('keyup keypress', function(e) {
         return; // user doesn't actually have a question, don't send anything.
     }
 
-   
-    // there's actually a question to send to Eliza.
-    const request = new XMLHttpRequest();
-    
-    request.open("POST", "http://localhost:8080/ask", true); // open the connection
-    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    request.onreadystatechange = function(){
-        if(request.readyState === XMLHttpRequest.DONE) {
-            var response = request.responseText;
-            addListItem("user_message", question);
-            setTimeout(function(){
-                addListItem("eliza_message", response);
-            }, 1500); // add a delay to make it look like Eliza is "typing" her message. instead of instantly displaying it.
-        }
-    }
+    addListItem("user_message", question); // add the question the user entered.
 
-    // add the question as a POST parameter.
-    const params = "question=" + question; 
-    // send the actual request.
-    request.send(params);
+    // jQuery docs https://api.jquery.com/jquery.get/
+    // use jQuery to send POST request
+    $.post(endPoint("ask"), {
+        question : question // the question is a query parameter.
+    }).done(function(data){ // this function gets called when the response is received.
+        setTimeout(function(){ // wait a little bit before displaying elizas answer to simulate a person typing
+            addListItem("eliza_message", data); 
+        }, 1500); 
+    }).fail(function(){
+        // if there was a network issue, display a message indicating so.
+        addListItem("eliza_message", "Sorry, the doctor is out, please check your connection and try again."); 
+    });
 });
 
 function addListItem(speaker, text){
