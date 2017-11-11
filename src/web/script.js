@@ -29,12 +29,11 @@ $('#user-input').on('keyup keypress', function(e) {
 
     e.preventDefault(); // default behaviour is refreshing the page, which will reset the list and lose the converstaion.
     
-    const userInput = document.getElementById("user-input");
-    const question = userInput.value.trim(); // remove all white space from either side of string.
+    const question = $("#user-input").val().trim(); // remove all white space from either side of string.
+    $("#user-input").val("") // wipe the text box clean.
 
-    userInput.value = ""; // wipe the text box clean.
-    if(question === ""){
-        return; // user doesn't actually have a question, don't send anything.
+    if(!question){
+        return; // user doesn't actually have a question, don't send or add anything.
     }
 
     addListItem("user_message", question); // add the question the user entered.
@@ -54,10 +53,9 @@ $('#user-input').on('keyup keypress', function(e) {
 });
 
 function addListItem(speaker, text){
-    const list = document.getElementById("conversation");
     const htmlString = "<li class=\"list-group-item " + speaker + "\"><p align=\"left\">" + text + "</p></li>"
-    list.insertAdjacentHTML("beforeend", htmlString);
-    
+    $("#conversation").append(htmlString);
+
     // scroll down to see the newest messages any time the list is added.
     // found this solition here https://stackoverflow.com/questions/11715646/scroll-automatically-to-the-bottom-of-the-page
     window.scrollTo(0, document.body.scrollHeight);
