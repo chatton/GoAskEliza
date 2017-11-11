@@ -2,15 +2,9 @@ const keyCodes = {
     ENTER : 13
 }
 
-const BASE_URL = "http://localhost:8080/"
-
-function endPoint(end){
-    return BASE_URL + end;
-}
-
 $(document).ready( function(){
     // send GET request using jQuery and ajax.
-    $.get(endPoint("history"), function(data){
+    $.get("/history", function(data){
         const history = JSON.parse(data); 
         for(var i = 0; i < history.Questions.length; i++){ // add all the past questions to maintain the state of the conversation.
             addListItem("user_message", history.Questions[i]);
@@ -40,7 +34,7 @@ $('#user-input').on('keyup keypress', function(e) {
 
     // jQuery docs https://api.jquery.com/jquery.get/
     // use jQuery to send POST request
-    $.post(endPoint("ask"), {
+    $.post("/ask", {
         question : question // the question is a query parameter.
     }).done(function(data){ // this function gets called when the response is received.
         setTimeout(function(){ // wait a little bit before displaying elizas answer to simulate a person typing
