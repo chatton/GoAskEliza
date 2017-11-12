@@ -2,7 +2,7 @@ const keyCodes = {
     ENTER : 13
 }
 
-$(document).ready( function(){
+$(document).ready( () => {
     // send GET request using jQuery and ajax.
     $.get("/history", function(data){
         const history = JSON.parse(data); 
@@ -13,7 +13,7 @@ $(document).ready( function(){
     })
 });
 
-$('#user-input').on('keyup keypress', function(e) {
+$('#user-input').on('keyup keypress', e => {
     // found method to supress the default behaviour of the enter key here.
     // https://stackoverflow.com/questions/11235622/jquery-disable-form-submit-on-enter
     var keyCode = e.keyCode;
@@ -36,11 +36,11 @@ $('#user-input').on('keyup keypress', function(e) {
     // use jQuery to send POST request
     $.post("/ask", {
         question : question // the question is a query parameter.
-    }).done(function(data){ // this function gets called when the response is received.
-        setTimeout(function(){ // wait a little bit before displaying elizas answer to simulate a person typing
+    }).done( data => { // this function gets called when the response is received.
+        setTimeout(() => { // wait a little bit before displaying elizas answer to simulate a person typing
             addListItem("eliza_message", data); 
         }, 1500); 
-    }).fail(function(){
+    }).fail(() => {
         // if there was a network issue, display a message indicating so.
         addListItem("eliza_message", "Sorry, the doctor is out, please check your connection and try again."); 
     });
