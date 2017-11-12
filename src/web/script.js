@@ -4,7 +4,7 @@ const keyCodes = {
 
 $(document).ready( () => {
     // send GET request using jQuery and ajax.
-    $.get("/history", function(data){
+    $.get("/history", data => {
         const history = JSON.parse(data); 
         for(var i = 0; i < history.Questions.length; i++){ // add all the past questions to maintain the state of the conversation.
             addListItem("user_message", history.Questions[i]);
