@@ -3,20 +3,20 @@ const keyCodes = {
 }
 
 $(document).ready( () => {
-    // send GET request using jQuery and ajax.
+    // send GET request using jQuery
     $.get("/history", data => {
-        const history = JSON.parse(data); 
+        const history = JSON.parse(data); // history is a JSON string containing previous questions. 
         for(var i = 0; i < history.Questions.length; i++){ // add all the past questions to maintain the state of the conversation.
             addListItem("user_message", history.Questions[i]);
             addListItem("eliza_message", history.Answers[i]);
         }    
-    })
+    });
 });
 
 $('#user-input').on('keyup keypress', e => {
     // found method to supress the default behaviour of the enter key here.
     // https://stackoverflow.com/questions/11235622/jquery-disable-form-submit-on-enter
-    var keyCode = e.keyCode;
+    let keyCode = e.keyCode;
     if(keyCode !== keyCodes.ENTER){
         return; // ignore any other keypress.
     }

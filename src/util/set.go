@@ -2,8 +2,6 @@ package util
 
 import (
 	"errors"
-	"math/rand"
-	"time"
 )
 
 // I consulted this post on how to emulate a set data-structure in go
@@ -52,7 +50,7 @@ func (set *StringSet) IsEmpty() bool {
 }
 
 func NewStringSet(initialVals ...string) *StringSet {
-	rand.Seed(time.Now().UTC().UnixNano())
+
 	set := &StringSet{make(map[string]bool)}
 	for _, val := range initialVals {
 		set.Add(val)
