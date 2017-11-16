@@ -3,8 +3,23 @@
 # priority will be given to patterns at the top of the file.
 # empty lines are ignored.
 
+
+mother was (.*)
+Was %s? Did something happen to her?;Why do you say 'was' %s?
+(?:mother is|mother's) (.*)
+Your mother is %s? How do you feel about that?;Your mother is %s, do you have an opinion on this?
+how does that make you feel?
+father was (.*)
+Your father was %s, did something happen to him?;He was %s, what else can you tell me about him?
+(?:father's|father is) (.*)
+So your father is %s, does this bother you?;Your father is %s, tell me, are you still close with him?
+Hey! That's my line!;Oh, so you think you can do my job better than I can?
+(?:I'm|im|I am) (.*) (?:thank you|thanks)
+I'm happy to hear that you are %s.;I'm glad that you are %s.;How does it make you feel to be %s?
+how are you?
+I'm good, but did you really come here to talk about me?;Does it matter how I am?;Why do you want to know how I am?
 Do you like (.*)
-No... I love %s.;I hate %s, and to be honest the fact that you do worries me.
+No... I love %s;I hate %s, and to be honest the fact that you do worries me.
 robot
 Robot? I don't know what you're talking about.;Robot? Maybe you need to see a therapist.;Robot? Maybe you need you need a factory reset.
 died;dead
@@ -69,7 +84,7 @@ time
 Are you in a rush?;Are you in a hurry?;Don't worry about time right now.
 I'm worried about (.*)
 Why are you worried about %s?;What makes you worried about %s?
-(Hello);(\bhi\b);(hey)
+(?:hello|\bhi\b|hey)
 Hello, shall we begin?;Hi, how are you?
 Eliza
 I'm glad you remembered my name.;So, you remembered by name.

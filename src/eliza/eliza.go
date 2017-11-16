@@ -53,16 +53,6 @@ func (e *Eliza) Answers() []string {
 	return []string(e.history["answers"])
 }
 
-// Greet returns a general greeting as a string.
-// A boolean value is given to indicate if this is the "first time"
-// someone is talking to her.
-func (e *Eliza) Greet(firstTime bool) string {
-	if firstTime {
-		return "Hi, my name is Eliza, it's nice to meet you."
-	}
-	return "Welcome back. Let's continue."
-}
-
 // https://github.com/golang/go/wiki/CodeReviewComments#interfaces
 // The documentation states that interfaces belong in the package that is
 // going to use the interface type, not in with the implementations.

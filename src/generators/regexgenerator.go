@@ -158,6 +158,7 @@ func questionIsGreeting(question string) bool {
 // GenerateAnswers belongs to eliza.AnswerGenerator interface.
 func (gen *RegexGenerator) GenerateAnswers(question string) []string {
 
+	// eliza will give back an answer recognizing that you didn't greet her.
 	if gen.firstQuestion {
 		gen.firstQuestion = false
 		if !questionIsGreeting(question) {
@@ -166,6 +167,7 @@ func (gen *RegexGenerator) GenerateAnswers(question string) []string {
 	}
 
 	question = strings.ToLower(question) // ignore case
+
 	if gen.isRepeatQuestion(question) {
 		// if they ask the same question, they will get a response showing
 		// that the previous question was "remembered"
@@ -226,10 +228,10 @@ func (gen *RegexGenerator) getQuestionTopic(re *regexp.Regexp, question string) 
 	if len(match) == 1 {
 		return "" // no capture is needed
 	}
-	questionTopic := match[1] // 0 is the full string, 1 is first match.
-	questionTopic = gen.substituteWords(questionTopic)
-	questionTopic = removeUnwantedCharacters(questionTopic)
-	return questionTopic
+	questionTopic := match[1]                               // 0 is the full string, 1 is first match.
+	questionTopic = gen.substituteWords(questionTopic)      // reflect pronouns
+	questionTopic = removeUnwantedCharacters(questionTopic) // filter any characters out
+	return questionTopic                                    // the topic ready to be inserted into the response.
 }
 
 func (gen *RegexGenerator) substituteWords(answer string) string {

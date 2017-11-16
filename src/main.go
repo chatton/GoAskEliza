@@ -31,7 +31,7 @@ func main() {
 func handleAsk(w http.ResponseWriter, r *http.Request) {
 	if userHasQuestion(r) {
 		var userQuestion string
-		switch r.Method {
+		switch r.Method { // can handle both GET and POST requests.
 		case "GET":
 			userQuestion = r.URL.Query().Get("question") // extract GET parameter
 		case "POST":

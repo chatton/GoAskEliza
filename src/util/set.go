@@ -25,7 +25,7 @@ func (set *StringSet) Contains(s string) bool {
 
 func (set *StringSet) Remove(s string) error {
 	if !set.Contains(s) {
-		return errors.New("Element: " + s + " does not exist in the set.")
+		return errors.New("Element: [" + s + "] does not exist in the set.")
 	}
 	delete(set.set, s) // delete instead of setting to false, potential memory leak keeping values that "aren't there"
 	return nil         // no error, the element was removed successfully
