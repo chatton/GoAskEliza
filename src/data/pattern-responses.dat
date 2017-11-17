@@ -3,7 +3,8 @@
 # priority will be given to patterns at the top of the file.
 # empty lines are ignored.
 
-
+(?:What's|whats|what is) your name
+My name is Eliza, but we're not here to talk about me, are we?
 mother was (.*)
 Was %s? Did something happen to her?;Why do you say 'was' %s?
 (?:mother is|mother's) (.*)
@@ -78,9 +79,9 @@ You are (.*)
 Why do you think I am %s?;Do you really think I am %s?;Perhaps you are really talking about yourself
 (father);(dad)
 Tell me about your father.;Let's talk about your father.;Tell me about your relationship with your father when you were growing up.;Do you have a good relationship with your father?
-(mother);(mom);(mam);(mum)
+(?:\bmother\b|\bmom\b)
 Tell me about your mother.;Let's talk about your mother.;Tell me about your relationship with your mother when you were young.;Do you have a good relationship with your mother now?
-time
+\btime\b
 Are you in a rush?;Are you in a hurry?;Don't worry about time right now.
 I'm worried about (.*)
 Why are you worried about %s?;What makes you worried about %s?
