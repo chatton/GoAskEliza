@@ -1,4 +1,4 @@
-My name is Cian Hatton, this repository is holds an Eliza-Like chatbot.
+My name is Cian Hatton, this repository holds an Eliza-Like chatbot.
 
 The chatbot was made as project for my Data Representation and Querying module in my 3rd year Software Development course at GMIT.
 
@@ -68,11 +68,11 @@ If the first sentence the user enters isn't a "greeting", Eliza will recognize t
 
 If the user says "you", in certain situations Eliza will say something like "Did you come here to talk about me?", giving the illusion of understanding in the conversation.
 
-Eliza will never pick the same response twice, unless all possible responses have been picked already. I chose to implement this as duplicate responses stand out, i.e. break the illusion of intelligence. Non-duplicate responses don't necessarily stand out as showing more understanding or impressive, but it keeps the "flow" of the conversation more natural.
+Eliza will never pick the same response twice, unless all possible responses have been picked already. I chose to implement this as duplicate responses stand out, i.e. break the illusion of intelligence. Non-duplicate responses don't necessarily stand out as showing more understanding or as more impressive, but it keeps the "flow" of the conversation more natural.
 
 Eliza will occasionally "remember" a past question, and bring it up in one her generic catch all answers, again, this is just to make it seem like there is some understanding of the conversation.
 
-In Eliza's catch all answers, she will try to change the subject to a topic that there are more specific patternrs of, again this soley intended to steer the direction of conversation into a place where she will have more specific responses, giving the illution of intelligence and understanding.
+In Eliza's catch all answers, she will try to change the subject to a topic that there are more specific patterns and answers for, again this soley intended to steer the direction of conversation into a place where she will have more specific responses, giving the illution of intelligence and understanding.
 
 # Design Decisions
 
@@ -90,11 +90,11 @@ ask
 
 All of the Eliza logic was intentionally kept completely separate from the web server aspect of the project. There's no need for the Eliza bot to know anything about the web server. This also allowed me to write the simple ***ask.go*** program, which is a small program that allows you to pass in a single question and get a single response, which I used to test Eliza functionality during development. If I needed to start a web server any time I wanted to test the logic, it would have sloved things down considerably and made the development process more cumbersome.
 
-As there is no in-built Set data structure in Go, and multiple packages needed a data structure to quickly access and check for presence, I created a small StringSet struct. I could have just used a Map directly, but I decided that it would get enough use that it was worth writing. 
+As there is no in-built Set data structure in Go, and multiple packages needed a data structure to quickly access and check for presence, I created a small StringSet struct. I could have just used a Map directly, but I decided that it would get enough use that it was worth implementing my own. 
 
 In order to keep the main function simple, I created a separate Server struct that handled all the web server duties.
 
-I chose to use a slice of Response structs in order to represent the pattern/answer pair. I did this because slices maintain order, this order allowed me to "prioritse" the more specific patterns by simply placing them at the top of the file. The more specific the pattern, the more "understanding" Eliza appears.
+I chose to use a slice of Response structs in order to represent the pattern/answer pair. I did this because slices maintain order, this order allowed me to "prioritse" the more specific patterns by simply placing them at the top of the file. The more specific the pattern, the more "understanding" Eliza appears to have.
 
 # Technical Problems That I Encountered.
 
@@ -119,9 +119,13 @@ Currently, when the web server is running, there is only a single instance of El
 The web server and Eliza were built using the [Go](https://golang.org/) programming language.
 The web server serves a html page (using [bootstrap](http://getbootstrap.com/)), and ajax queries are made using JavaScript and [jQuery](https://jquery.com/).
 
+# Misc.
+
+See this [Discord Bot](https://github.com/chatton/ElizaBot) that uses this Eliza web server.
+
 # References
 
-This implementation in Eliza game me many ideas in terms of the reflection map and also some of the pattern/response combinations that I implementated here. https://www.smallsurething.com/implementing-the-famous-eliza-chatbot-in-python/
+This implementation of Eliza gave me many ideas in terms of the reflection map and also some of the pattern/response combinations that I implementated here. https://www.smallsurething.com/implementing-the-famous-eliza-chatbot-in-python/
 
 Chapter 15 of [Paradigms of Artificial Intelligence Programming: Case Studies in Common Lisp](https://www.amazon.com/Paradigms-Artificial-Intelligence-Programming-Studies/dp/1558601910) gave a good overview of the problems that arised in the original version.
 
