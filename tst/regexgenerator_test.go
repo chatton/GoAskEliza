@@ -67,6 +67,16 @@ func TestRegexGeneratorResponses(t *testing.T) {
 		"How long have you felt sad?",
 	}})
 
+	testData = append(testData, TestData{"I like talking to you.", []string{
+		"Why do you like talking to me?",
+		"Are you sure you like talking to me?",
+	}})
+
+	testData = append(testData, TestData{"I had a rough childhood.", []string{
+		"What did you want to be when you were growing up?",
+		"What was life like when you were growing up?",
+	}})
+
 	for _, data := range testData {
 		answers := gen.GenerateAnswers(data.question)
 		if !sliceContainsAll(answers, data.expectedAnswers) {
