@@ -147,7 +147,7 @@ func (gen *RegexGenerator) getRandomPastQuestion() string {
 func questionIsGreeting(question string) bool {
 
 	for _, pattern := range greetingPatterns {
-		re := regexp.MustCompile(pattern)
+		re := regexp.MustCompile("(?i)" + pattern)
 		if re.MatchString(question) {
 			return true
 		}
@@ -177,7 +177,7 @@ func (gen *RegexGenerator) GenerateAnswers(question string) []string {
 	defaultAnswers := gen.defaultAnswers()
 
 	if !questionIsGreeting(question) { // don't want to "remember" a greeting.
-		// end with with Eliza saying "Earlier you said "hello" let's talk more about that"
+		// end wup ith with Eliza saying "Earlier you said "hello" let's talk more about that"
 		// question will now prompt repeat answers if it comes up again
 		gen.rememberQuestion(question)
 	}
@@ -189,9 +189,10 @@ func (gen *RegexGenerator) GenerateAnswers(question string) []string {
 			// don't consider the element at index 0 which is the full match.
 			matches := re.FindStringSubmatch(question)[1:]
 			// only want to switch the pronouns and remove punctuation from the user input text.
-			for index, val := range matches {
-				matches[index] = gen.substituteWords(val)
-				matches[index] = removeUnwantedCharacters(matches[index])
+			for i := 0; i < len(matches); i++ {
+				// remove punctuation first so that punctuation doesn't interfere with word mappings.
+				// eg "you." won't be in the map but "you" will.
+				matches[i] = gen.substituteWords(removeUnwantedCharacters(matches[i]))
 			}
 
 			returnResponses := make([]string, len(response.responses)) // make our new slice to hold the returned responses.
