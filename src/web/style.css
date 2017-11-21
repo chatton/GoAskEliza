@@ -1,7 +1,12 @@
 ul {
-    margin-left: 10%;
-    margin-right: 10%;
+    margin-left: 15%;
+    margin-right: 15%;
     padding-bottom: 10%;
+}
+
+li {
+    font-size: 25px;
+    
 }
 
 h2 {
@@ -17,11 +22,14 @@ body {
 }
 
 li.eliza_message {
-    background-color : #401F7C;
-    color: white;
+    background-color : #338B33;
+    color: #231456;
+    font-style: italic;
+    font-weight: bold;
 }
 
 li.user_message {
-    background-color: #2A40A7;
-    color: white;
+    background-color: #69B169;
+    color: #231456;
+    font-weight: bold;
 }

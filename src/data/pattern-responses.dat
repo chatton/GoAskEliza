@@ -7,13 +7,13 @@
 My name is Eliza, but we're not here to talk about me, are we?
 mother was (.*)
 Was %s? Did something happen to her?;Why do you say 'was' %s?
-(?:mother is|mother's) (.*)
+(?:mother is|mother'?s) (.*)
 Your mother is %s? How do you feel about that?;Your mother is %s, do you have an opinion on this?
-how does that make you feel?
 father was (.*)
 Your father was %s, did something happen to him?;He was %s, what else can you tell me about him?
-(?:father's|father is) (.*)
+(?:father'?s|father is) (.*)
 So your father is %s, does this bother you?;Your father is %s, tell me, are you still close with him?
+how does that make you feel?
 Hey! That's my line!;Oh, so you think you can do my job better than I can?
 (?:I'm|im|I am) (.*) (?:thank you|thanks)
 I'm happy to hear that you are %s.;I'm glad that you are %s.;How does it make you feel to be %s?
@@ -27,7 +27,7 @@ Robot? I don't know what you're talking about.;Robot? Maybe you need to see a th
 I'm sorry for your loss.;I'm sorry to hear that, was it hard for you?;It's not easy losing somebody, would you like to talk about it?
 all your base are belong to us
 You have no chance to survive make your time.
-goodbye;bye$;quit
+(?:goodbye|bye|quit|exit)
 Goodbye, it was nice to talk to you;It was nice talking with you, goodbye.;That will be $300, thank you.
 (?:grew\s?up|child\s?hood|growing up)
 What was life like when you were growing up?;What did you want to be when you were growing up?
@@ -35,19 +35,19 @@ We should (.*)
 Why should we %s?;Are you sure we should %s?;Hmmm, why should we %s?
 I should (.*)
 Why do you think you should %s?;Should you really %s?;Oh? You think you should %s?
-she's (.*);she is (.*)
+(?:she'?s|she is) (.*)
 Why do you think she's %s?;Can you think of any reason she is %s?;How long as she been %s?
-he's (.*); he is (.*)
-Why do you think he's %s?;Can you think of any reason he is %s?;How long has he been %s?
+(?:he'?s|he is) (.*)
+Why do you think he is %s?;Can you think of any reason he is %s?;How long has he been %s?
 Because (.*)
 Is that the real reason is %s?;Do you really it's really because %s?;How can you be sure it is because %s?
 Are you (.*)
 Does it matter if I am %s?;Would you prefer if I was %s?;Would you prefer if I wasn't %s?;Maybe I am.;Maybe I'm not
 I want to be able to (.*)
 How long have you wanted to be able to %s?;Are you sure you want to be able to %s?
-name is (.*);name's (.*)
+(?:name is|name'?s) (.*)
 Hello %s, it's nice to meet you.;It's nice to meet you, %s.
-thank you;thanks
+(?:thank you|thanks)
 You're very welcome.;It was no trouble at all.
 sorry
 There's really no need to say sorry;There's no need to apologize.
@@ -67,34 +67,39 @@ How (.*)
 How do you suppose;Hmmm I think you'd be able to answer that question better than I could.;How do you think?
 I think (.*)
 How long have you thought %s?; Do you really think %s?;You think %s, but I sense a little doubt.;Why do you think %s?
-^(yes)$;^(yeah)$
+^(?:yes|yeah)$
 You seem very confident;Is that all you have to say about it?;Very succinct of you.;Can you elaborate a bit?
 ^No$
-Are you sure?;Are you positive?;Interesting...
+Are you sure?;Are you positive?;Just "no"? Don't you have anything else to say about it?
 Is it (.*)
 Do you think it is %s?;If I told you that it probably isn't %s, how would that make you feel?;If I told you that it probably is %s, how would that make you feel?
 Can you (.*)?
 Why would you like me to %s?;Do you really want me to %s?;I can %s if you would like.;If I could %s, how would that make you feel?
 You are (.*)
 Why do you think I am %s?;Do you really think I am %s?;Perhaps you are really talking about yourself
-(father);(dad)
+\b(?:father|dad)\b
 Tell me about your father.;Let's talk about your father.;Tell me about your relationship with your father when you were growing up.;Do you have a good relationship with your father?
-(?:\bmother\b|\bmom\b)
+\b(?:mother|mom)\b
 Tell me about your mother.;Let's talk about your mother.;Tell me about your relationship with your mother when you were young.;Do you have a good relationship with your mother now?
 \btime\b
 Are you in a rush?;Are you in a hurry?;Don't worry about time right now.
 I'm worried about (.*)
 Why are you worried about %s?;What makes you worried about %s?
-(?:hello|\bhi\b|hey)
-Hello, shall we begin?;Hi, how are you?
+\b(?:hello|hi|hey)\b
+Hello, shall we begin?;Hi, how are you?;Hello, how are you doing?
 Eliza
 I'm glad you remembered my name.;So, you remembered by name.
 I feel (.*)
 Can you tell me why you feel %s?;Tell me more about these feelings.;How long have you felt %s?
 .*\?$
 Why do you ask that?;What made you ask me that?;How would you expect me to answer?
+
+# this pattern captures 2 items from the user input
+# The are inserted into the format string in the order
+# in which they appear.
+
 I (hate|loath|dislike|despise) (.*)
-Why do you %s %s?;Do you really %s %s?;Are you sure you %s %s?;How do you feel about %sing %s?
+Why do you %s %s?;Do you really %s %s?;Are you sure you %s %s?
 good (morning|evening|afternoon)
 good %s to you too.;It's a lovely %s isn't it?
 \byou\b

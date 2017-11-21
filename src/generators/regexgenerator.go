@@ -119,13 +119,10 @@ func makeResponses(path string) []Response {
 	allLines := readLines(path)      //read in slice of all lines in the file.
 	responses := make([]Response, 0) // make a slice of Responses to hold the responses, don't know how many there will be so start at size = 0
 	for i := 0; i < len(allLines); i += 2 {
-		allPatterns := strings.Split(allLines[i], ";")    // patterns on first line
+		pattern := "(?i)" + allLines[i]                   // make every pattern case insensitive.
 		allResponses := strings.Split(allLines[i+1], ";") // responses on the next line.
-		for _, pattern := range allPatterns {
-			pattern = "(?i)" + pattern        // make pattern case insensitive.
-			re := regexp.MustCompile(pattern) // throws an error if the pattern doesn't compile.
-			responses = append(responses, Response{re: re, responses: allResponses})
-		}
+		re := regexp.MustCompile(pattern)
+		responses = append(responses, Response{re: re, responses: allResponses})
 	}
 	return responses
 }

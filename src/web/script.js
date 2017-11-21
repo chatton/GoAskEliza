@@ -3,6 +3,8 @@ const keyCodes = {
 }
 
 $(document).ready( () => {
+    // retain history on refresh by getting the conversation history from the server.
+    // history is lost when the server is restarted.
     // send GET request using jQuery
     $.get("/history", data => {
         const history = JSON.parse(data); // history is a JSON string containing previous questions. 
@@ -16,7 +18,7 @@ $(document).ready( () => {
 $('#user-input').on('keyup keypress', e => {
     // found method to supress the default behaviour of the enter key here.
     // https://stackoverflow.com/questions/11235622/jquery-disable-form-submit-on-enter
-    let keyCode = e.keyCode;
+    const keyCode = e.keyCode;
     if(keyCode !== keyCodes.ENTER){
         return; // ignore any other keypress.
     }
@@ -39,7 +41,7 @@ $('#user-input').on('keyup keypress', e => {
     }).done( data => { // this function gets called when the response is received.
         setTimeout(() => { // wait a little bit before displaying elizas answer to simulate a person typing
             addListItem("eliza_message", data); 
-        }, 1500); 
+        }, Math.floor(Math.random() * 2500) + 500); // random number between 500 and 2500 as a "wait" time for Eliza to type 
     }).fail(() => {
         // if there was a network issue, display a message indicating so.
         addListItem("eliza_message", "Sorry, the doctor is out, please check your connection and try again."); 
@@ -47,11 +49,12 @@ $('#user-input').on('keyup keypress', e => {
 });
 
 function addListItem(speaker, text){
-    const htmlString = "<li class=\"list-group-item " + speaker + "\"><p align=\"left\">" + text + "</p></li>"
-    $("#conversation").append(htmlString);
+    const direction = speaker == "user_message" ? "left" : "right";
+    const htmlString = "<li class=\"list-group-item " + speaker + "\"><p align=\"" + direction + "\">" + text + "</p></li>"
+   $("#conversation").append(htmlString);
 
     // scroll down to see the newest messages any time the list is added.
-    // found this solition here https://stackoverflow.com/questions/11715646/scroll-automatically-to-the-bottom-of-the-page
+    // found this solution here https://stackoverflow.com/questions/11715646/scroll-automatically-to-the-bottom-of-the-page
     window.scrollTo(0, document.body.scrollHeight);
 }
 
