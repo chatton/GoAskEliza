@@ -207,9 +207,10 @@ func (gen *RegexGenerator) GenerateAnswers(question string) []string {
 }
 
 func constructAnswer(response string, matches []string) string {
-	if len(matches) == 0 {
+	if len(matches) == 0 || !strings.Contains(response, "%s") {
 		return response // no substitution is requred, the answer is already complete.
 	}
+
 	// I consulted this SO question on how to call Sprintf using varargs
 	//https://stackoverflow.com/questions/30588581/how-to-pass-variable-parameters-to-sprintf-in-golang
 	istrings := make([]interface{}, len(matches))

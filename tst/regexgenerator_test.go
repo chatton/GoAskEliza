@@ -51,6 +51,22 @@ func TestRegexGeneratorResponses(t *testing.T) {
 		"It's nice to meet you, Bob.",
 	}})
 
+	// on a repeat question the repeat answers are given.
+	testData = append(testData, TestData{"I like waffles.", []string{
+		"Hmmm, you've asked this before.",
+		"I see you want to talk about this some more.",
+		"It's interesting that you want to talk about this again.",
+		"I find it interesting that you're talking about this again.",
+		"You seem to be repeating yourself.",
+		"Are you expecting a different answer to the same question?",
+	}})
+
+	testData = append(testData, TestData{"I feel sad.", []string{
+		"Can you tell me why you feel sad?",
+		"Tell me more about these feelings.",
+		"How long have you felt sad?",
+	}})
+
 	for _, data := range testData {
 		answers := gen.GenerateAnswers(data.question)
 		if !sliceContainsAll(answers, data.expectedAnswers) {
