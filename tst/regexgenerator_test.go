@@ -11,24 +11,6 @@ type TestData struct {
 	expectedAnswers []string
 }
 
-func sliceContains(slice []string, val string) bool {
-	for _, s := range slice {
-		if s == val {
-			return true
-		}
-	}
-	return false
-}
-
-func sliceContainsAll(actual, expected []string) bool {
-	for _, expectedVal := range expected {
-		if !sliceContains(actual, expectedVal) {
-			return false
-		}
-	}
-	return true
-}
-
 func TestRegexGeneratorResponses(t *testing.T) {
 	gen := generators.NewRegexGenerator("./data/pattern-responses.dat")
 	testData := []TestData{}
@@ -79,7 +61,7 @@ func TestRegexGeneratorResponses(t *testing.T) {
 
 	for _, data := range testData {
 		answers := gen.GenerateAnswers(data.question)
-		if !sliceContainsAll(answers, data.expectedAnswers) {
+		if !containsAll(answers, data.expectedAnswers...) {
 			t.Errorf("Test failed. Actual %s, Expected %s", answers, data.expectedAnswers)
 		}
 	}
