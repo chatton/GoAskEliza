@@ -46,13 +46,13 @@ Does it matter if I am %s?;Would you prefer if I was %s?;Would you prefer if I w
 I want to be able to (.*)
 How long have you wanted to be able to %s?;Are you sure you want to be able to %s?
 name is (.*);name's (.*)
-Hello %s, it's nice to meet you.;It's nice to meet you, %s
+Hello %s, it's nice to meet you.;It's nice to meet you, %s.
 thank you;thanks
 You're very welcome.;It was no trouble at all.
 sorry
 There's really no need to say sorry;There's no need to apologize.
 I like (.*)
-Why do you like %s?;are you sure you like %s?
+Why do you like %s?;Are you sure you like %s?
 I want (.*)
 If you got %s, then what would you do?;Are you sure you want %s?;Why do you want %s?;Do you really want %s?
 I need (.*)
