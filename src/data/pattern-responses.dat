@@ -23,13 +23,13 @@ Do you like (.*)
 No... I love %s;I hate %s, and to be honest the fact that you do worries me.
 robot
 Robot? I don't know what you're talking about.;Robot? Maybe you need to see a therapist.;Robot? Maybe you need you need a factory reset.
-died;dead
+(?:died|dead|passed away)
 I'm sorry for your loss.;I'm sorry to hear that, was it hard for you?;It's not easy losing somebody, would you like to talk about it?
 all your base are belong to us
 You have no chance to survive make your time.
 goodbye;bye$;quit
 Goodbye, it was nice to talk to you;It was nice talking with you, goodbye.;That will be $300, thank you.
-grew up;childhood;growing up
+(?:grew\s?up|child\s?hood|growing up)
 What was life like when you were growing up?;What did you want to be when you were growing up?
 We should (.*)
 Why should we %s?;Are you sure we should %s?;Hmmm, why should we %s?
@@ -40,7 +40,7 @@ Why do you think she's %s?;Can you think of any reason she is %s?;How long as sh
 he's (.*); he is (.*)
 Why do you think he's %s?;Can you think of any reason he is %s?;How long has he been %s?
 Because (.*)
-Is that the real reason?;Do you really think that's why?;How can you be sure?
+Is that the real reason is %s?;Do you really it's really because %s?;How can you be sure it is because %s?
 Are you (.*)
 Does it matter if I am %s?;Would you prefer if I was %s?;Would you prefer if I wasn't %s?;Maybe I am.;Maybe I'm not
 I want to be able to (.*)
@@ -61,7 +61,7 @@ I love (.*)
 Are you sure you love %s?;Why do you love %s?;Is it possible that you don't love %s at all?;When did you start loving %s?;How long have you loved %s?
 Why can't I (.*)
 Why would you want to %s?;I don't know, have you really tried to %s?;Do you think you should be able to %s?
-I am (.*);I'm (.*)
+(?:I am|im|i'm) (.*)
 Did you come to me because you are %s?;How long have you been %s?;How does being %s make you feel?;Why do you think you are %s?;Have you always been %s?
 How (.*)
 How do you suppose;Hmmm I think you'd be able to answer that question better than I could.;How do you think?
@@ -69,7 +69,7 @@ I think (.*)
 How long have you thought %s?; Do you really think %s?;You think %s, but I sense a little doubt.;Why do you think %s?
 ^(yes)$;^(yeah)$
 You seem very confident;Is that all you have to say about it?;Very succinct of you.;Can you elaborate a bit?
-^(No)$
+^No$
 Are you sure?;Are you positive?;Interesting...
 Is it (.*)
 Do you think it is %s?;If I told you that it probably isn't %s, how would that make you feel?;If I told you that it probably is %s, how would that make you feel?
@@ -91,11 +91,11 @@ Eliza
 I'm glad you remembered my name.;So, you remembered by name.
 I feel (.*)
 Can you tell me why you feel %s?;Tell me more about these feelings.;How long have you felt %s?
-(.*)\?
+.*\?$
 Why do you ask that?;What made you ask me that?;How would you expect me to answer?
-I hate (.*);I loath (.*);I dislike (.*)
-Why do you hate %s?;Do you really hate %s?;Are you sure you hate %s?;How do you feel about hating %s?
-good ([morning|evening|afternoon]+)
+I (hate|loath|dislike|despise) (.*)
+Why do you %s %s?;Do you really %s %s?;Are you sure you %s %s?;How do you feel about %sing %s?
+good (morning|evening|afternoon)
 good %s to you too.;It's a lovely %s isn't it?
 \byou\b
 We're talking about you, not me.;Did you come here to talk about me?

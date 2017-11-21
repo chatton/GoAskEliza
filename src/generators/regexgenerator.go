@@ -166,8 +166,6 @@ func (gen *RegexGenerator) GenerateAnswers(question string) []string {
 		}
 	}
 
-	question = strings.ToLower(question) // ignore case
-
 	if gen.isRepeatQuestion(question) {
 		// if they ask the same question, they will get a response showing
 		// that the previous question was "remembered"
@@ -185,11 +183,20 @@ func (gen *RegexGenerator) GenerateAnswers(question string) []string {
 	}
 
 	for _, response := range gen.responses { // looking through all possible responses.
-		if response.re.MatchString(question) { // if the question matches a response regex pattern.
-			questionTopic := gen.getQuestionTopic(response.re, question) // extract the "topic" from the question
-			returnResponses := make([]string, len(response.responses))   // make our new slice to hold the returned responses.
-			for index, resp := range response.responses {                // go through the possible return values for that response
-				returnResponses[index] = makeResponse(resp, questionTopic)
+		re := response.re
+		if re.MatchString(question) { // if the question matches a response regex pattern.
+
+			// don't consider the element at index 0 which is the full match.
+			matches := re.FindStringSubmatch(question)[1:]
+			// only want to switch the pronouns and remove punctuation from the user input text.
+			for index, val := range matches {
+				matches[index] = gen.substituteWords(val)
+				matches[index] = removeUnwantedCharacters(matches[index])
+			}
+
+			returnResponses := make([]string, len(response.responses)) // make our new slice to hold the returned responses.
+			for index, resp := range response.responses {              // go through the possible return values for that response
+				returnResponses[index] = constructAnswer(resp, matches)
 			}
 			return returnResponses // give back a slice of fully formed answers to the question.
 		}
@@ -198,14 +205,17 @@ func (gen *RegexGenerator) GenerateAnswers(question string) []string {
 	return defaultAnswers
 }
 
-func makeResponse(response, questionTopic string) string {
-	// it means the response will use the question topic in the answer and needs to be formatted.
-	if strings.Contains(response, "%s") {
-		// insert the question topic into the response.
-		return fmt.Sprintf(response, questionTopic)
+func constructAnswer(response string, matches []string) string {
+	if len(matches) == 0 {
+		return response // no substitution is requred, the answer is already complete.
 	}
-	// the response doesn't need to be formatted. It is complete as is.
-	return response
+	// I consulted this SO question on how to call Sprintf using varargs
+	//https://stackoverflow.com/questions/30588581/how-to-pass-variable-parameters-to-sprintf-in-golang
+	istrings := make([]interface{}, len(matches))
+	for index, val := range matches {
+		istrings[index] = val
+	}
+	return fmt.Sprintf(response, istrings...)
 }
 
 func (gen *RegexGenerator) defaultAnswers() []string {
@@ -221,17 +231,6 @@ func (gen *RegexGenerator) defaultAnswers() []string {
 		returnAnswers = append(returnAnswers, reflectOnPreviousQuestion)
 	}
 	return returnAnswers
-}
-
-func (gen *RegexGenerator) getQuestionTopic(re *regexp.Regexp, question string) string {
-	match := re.FindStringSubmatch(question)
-	if len(match) == 1 {
-		return "" // no capture is needed
-	}
-	questionTopic := match[1]                               // 0 is the full string, 1 is first match.
-	questionTopic = gen.substituteWords(questionTopic)      // reflect pronouns
-	questionTopic = removeUnwantedCharacters(questionTopic) // filter any characters out
-	return questionTopic                                    // the topic ready to be inserted into the response.
 }
 
 func (gen *RegexGenerator) substituteWords(answer string) string {
