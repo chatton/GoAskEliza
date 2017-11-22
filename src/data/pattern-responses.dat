@@ -2,6 +2,30 @@
 # we want to put the more specific pattern matches towards the start of the file.
 # priority will be given to patterns at the top of the file.
 # empty lines are ignored.
+# patterns with multiple capture groups can be subbed into
+# format strings with multiple %s, in the order they appear.
+
+(?::\)|:D|;\)|:\()
+Oh I'm sorry, I don't speak emoji. You should really learn to express your feelings with words.
+
+# -> It was nice talking with/to you
+it was (.*) (to|with) you
+It was %s %s you too.;I'm glad I got to %s %s you too.
+
+# -> My childhood was great.
+# -> My mother was nice.
+my (.*) was (.*)
+Your %s was %s? That's very interesting.;Oh really? Your %s was %s, please, tell me more.
+
+(?:name is|name'?s) (.*)
+Hello %s, it's nice to meet you.;It's nice to meet you, %s.
+
+# this pattern would also match "name is x" so it needs to go below.
+
+# my dog is sick
+# my adult life is pretty okay
+my (.*) is (.*)
+Your %s is %s? Please tell me more.;Your %s is really %s? How does that make you feel?
 
 (?:What's|whats|what is) your name
 My name is Eliza, but we're not here to talk about me, are we?
@@ -45,8 +69,6 @@ Are you (.*)
 Does it matter if I am %s?;Would you prefer if I was %s?;Would you prefer if I wasn't %s?;Maybe I am.;Maybe I'm not
 I want to be able to (.*)
 How long have you wanted to be able to %s?;Are you sure you want to be able to %s?
-(?:name is|name'?s) (.*)
-Hello %s, it's nice to meet you.;It's nice to meet you, %s.
 (?:thank you|thanks)
 You're very welcome.;It was no trouble at all.
 sorry
@@ -93,11 +115,6 @@ I feel (.*)
 Can you tell me why you feel %s?;Tell me more about these feelings.;How long have you felt %s?
 .*\?$
 Why do you ask that?;What made you ask me that?;How would you expect me to answer?
-
-# this pattern captures 2 items from the user input
-# The are inserted into the format string in the order
-# in which they appear.
-
 I (hate|loath|dislike|despise) (.*)
 Why do you %s %s?;Do you really %s %s?;Are you sure you %s %s?
 good (morning|evening|afternoon)

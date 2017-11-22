@@ -136,7 +136,7 @@ func (gen *RegexGenerator) rememberQuestion(question string) {
 }
 
 // function to dig up a past question so that it can be used in
-// a question when no other response is better.
+// an answer when no other response is better.
 func (gen *RegexGenerator) getRandomPastQuestion() string {
 	return getRandomElementFromSet(gen.pastQuestions)
 }
@@ -144,7 +144,7 @@ func (gen *RegexGenerator) getRandomPastQuestion() string {
 func questionIsGreeting(question string) bool {
 
 	for _, pattern := range greetingPatterns {
-		re := regexp.MustCompile("(?i)" + pattern)
+		re := regexp.MustCompile(pattern)
 		if re.MatchString(question) {
 			return true
 		}
@@ -173,8 +173,10 @@ func (gen *RegexGenerator) GenerateAnswers(question string) []string {
 	// so evaluate these now.
 	defaultAnswers := gen.defaultAnswers()
 
-	if !questionIsGreeting(question) { // don't want to "remember" a greeting.
-		// end wup ith with Eliza saying "Earlier you said "hello" let's talk more about that"
+	questionSizeThreshold := 8
+	if !questionIsGreeting(question) && len(question) > questionSizeThreshold { // don't want to "remember" a greeting.
+		// or a short enough question, filter out most single word questions and greetings from the user input.
+		// end up with with Eliza saying "Earlier you said "hello" let's talk more about that"
 		// question will now prompt repeat answers if it comes up again
 		gen.rememberQuestion(question)
 	}
