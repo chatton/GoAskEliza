@@ -1,6 +1,6 @@
 My name is Cian Hatton, this repository holds an Eliza-Like chatbot.
 
-The chatbot was made as project for my Data Representation and Querying module in my 3rd year Software Development course at GMIT.
+The chatbot was my project for my Data Representation and Querying module in my 3rd year Software Development course at GMIT.
 
 The course page can be found [here](https://data-representation.github.io/)
 
