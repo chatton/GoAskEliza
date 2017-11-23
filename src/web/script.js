@@ -36,9 +36,9 @@ $('#user-input').on('keyup keypress', e => {
 
     // jQuery docs https://api.jquery.com/jquery.get/
     // use jQuery to send POST request
-    $.post("/ask", {
-        question : question // the question is a query parameter.
-    }).done( data => { // this function gets called when the response is received.
+    // ES6 syntax for {question:question}
+    $.post("/ask", {question}) // the question is a query parameter.
+     .done( data => { // this function gets called when the response is received.
         setTimeout(() => { // wait a little bit before displaying elizas answer to simulate a person typing
             addListItem("eliza_message", data); 
         }, Math.floor(Math.random() * 2500) + 500); // random number between 500 and 2500 as a "wait" time for Eliza to type 
