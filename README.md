@@ -47,6 +47,13 @@ http://localhost:8080/
 
 You can then start talking by entering text into the form at the bottom of the page and pressing Enter!
 
+I've also included an eliza.bat script which will do this for you. (this script does however assume that you have go installed.)
+You can download the script and execute it by double clicking on it or by opening up a command line in the same directory and entering the command
+
+```bash
+.\eliza.bat
+```
+
 # What is Eliza?
 
 The original [Eliza](https://en.wikipedia.org/wiki/ELIZA) program was a natural language processing computer program created in the 1960s.
