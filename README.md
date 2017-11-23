@@ -97,6 +97,8 @@ As there is no in-built Set data structure in Go, and multiple packages needed a
 
 I chose to use a slice of Response structs in order to represent the pattern/answer(s) pair. I did this because slices maintain order, this order allowed me to "prioritse" the more specific patterns by simply placing them at the top of the file. The more specific the pattern, the more "understanding" Eliza appears to have.
 
+I chose to do some additional processing of the regular expressions and inputs in the Go code. I stripped punctuation and unwanted characters directed from the user input instead of doing it using regex to help improve the readability of the expressions and to keep them as simple as possible, and I also prepended every expression with "(?i)" in order to make them all case insensitive. This has the potential draw back of making it impossible to include a pattern that is case ensitive, but I couldn't think of a scenario or regex pattern that would be specific enough that this would cause a problem.
+
 # Technical Problems That I Encountered.
 
 I initially kept the Reponse structs in a map, this worked for a little bit, the un-ordered nature worked quite well to make things seem different each time, but as I added in more "generic" patterns, these came up more often instead of the specific ones, so I changed to an ordered datastructure instead.
