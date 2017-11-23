@@ -5,6 +5,12 @@
 # patterns with multiple capture groups can be subbed into
 # format strings with multiple %s, in the order they appear.
 
+(?:name is|name'?s) (.*)
+Hello %s, it's nice to meet you.;It's nice to meet you, %s.
+
+I guess
+You guess? So you're not sure?;You don't sound very sure about that.;Hmmm, I don't think you really believe that.
+
 (?::\)|:D|;\)|:\()
 Oh I'm sorry, I don't speak emoji. You should really learn to express your feelings with words.
 
@@ -16,9 +22,6 @@ It was %s %s you too.;I'm glad I got to %s %s you too.
 # -> My mother was nice.
 my (.*) was (.*)
 Your %s was %s? That's very interesting.;Oh really? Your %s was %s, please, tell me more.
-
-(?:name is|name'?s) (.*)
-Hello %s, it's nice to meet you.;It's nice to meet you, %s.
 
 # this pattern would also match "name is x" so it needs to go below.
 

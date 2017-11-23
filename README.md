@@ -60,7 +60,7 @@ In the book [Paradigms of Artificial Intelligence Programming: Case Studies in C
 
 In this chapter, the author talks about how Eliza seems to be "understanding" the human speaking with her at first glance, and that as long as she is spoken to in proper English, her responses will seem to demonstrate understanding. However when you proivde unusual input or oddly structured sentences, it becomes more obvious that there really is no "understanding" of what's happening in the conversation.
 
-In my implementation, I tried to add some additional features with the plan on immitating intelligence and understanding, it's nothing more than string manipulation and pattern match.
+In my implementation, I tried to add some additional features with the plan on immitating intelligence and understanding, it's nothing more than string manipulation and pattern matching.
 
 Some examples.
 
@@ -83,18 +83,19 @@ The AnswerPicker simply picks back an answer. I included 2 implementations, one 
 
 Other AnswerGenerator implementatiosn could be crearted, and nothing else would need to change.
 
-I include multiple files that have different types of responses for different situations, this allows
+An AnswerGenerator that will always generate the same responses for the same inputs being separated out from the 
+AnswerPicker also makes it easier to write tests. It would be difficult to test the full functionality if the answer
+was generated and chosen in the same package/struct.
+
+I included multiple files that have different types of responses for different situations, this allows
 you to change and add patterns and responses by simply altering the .dat files instead of having to go in and change any code.
 The program will need to be restarted for any of these changes to take effect however.
-ask
 
 All of the Eliza logic was intentionally kept completely separate from the web server aspect of the project. There's no need for the Eliza bot to know anything about the web server. This also allowed me to write the simple ***ask.go*** program, which is a small program that allows you to pass in a single question and get a single response, which I used to test Eliza functionality during development. If I needed to start a web server any time I wanted to test the logic, it would have sloved things down considerably and made the development process more cumbersome.
 
 As there is no in-built Set data structure in Go, and multiple packages needed a data structure to quickly access and check for presence, I created a small StringSet struct. I could have just used a Map directly, but I decided that it would get enough use that it was worth implementing my own. 
 
-In order to keep the main function simple, I created a separate Server struct that handled all the web server duties.
-
-I chose to use a slice of Response structs in order to represent the pattern/answer pair. I did this because slices maintain order, this order allowed me to "prioritse" the more specific patterns by simply placing them at the top of the file. The more specific the pattern, the more "understanding" Eliza appears to have.
+I chose to use a slice of Response structs in order to represent the pattern/answer(s) pair. I did this because slices maintain order, this order allowed me to "prioritse" the more specific patterns by simply placing them at the top of the file. The more specific the pattern, the more "understanding" Eliza appears to have.
 
 # Technical Problems That I Encountered.
 
@@ -131,4 +132,4 @@ Chapter 15 of [Paradigms of Artificial Intelligence Programming: Case Studies in
 
 This Eliza implementation http://www.manifestation.com/neurotoys/eliza.php3 gave me some ideas for enhancements in how my version could seem more "real" and "intelligent"
 
-I consulted both the [jQuery](https://api.jquery.com/) and [bootstrap](https://getbootstrap.com/docs/3.3/getting-started/) documentation frequenty.
+I consulted both the [jQuery](https://api.jquery.com/) and [bootstrap](https://getbootstrap.com/docs/3.3/getting-started/) documentation frequenty during development.
