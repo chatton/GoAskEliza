@@ -29,7 +29,8 @@ Your %s was %s? That's very interesting.;Oh really? Your %s was %s, please, tell
 # my adult life is pretty okay
 my (.*) is (.*)
 Your %s is %s? Please tell me more.;Your %s is really %s? How does that make you feel?
-
+I got (.*)
+Did you want to get %s?;Does it upset you that you got %s?;Would you rather have not gotten %s?
 (?:What's|whats|what is) your name
 My name is Eliza, but we're not here to talk about me, are we?
 mother was (.*)
@@ -94,8 +95,8 @@ I think (.*)
 How long have you thought %s?; Do you really think %s?;You think %s, but I sense a little doubt.;Why do you think %s?
 ^(?:yes|yeah)$
 You seem very confident;Is that all you have to say about it?;Very succinct of you.;Can you elaborate a bit?
-^No$
-Are you sure?;Are you positive?;Just "no"? Don't you have anything else to say about it?
+^(No|Nope|Nah)$
+Are you sure?;Are you positive?;Just "%s"? Don't you have anything else to say about it?
 Is it (.*)
 Do you think it is %s?;If I told you that it probably isn't %s, how would that make you feel?;If I told you that it probably is %s, how would that make you feel?
 Can you (.*)?

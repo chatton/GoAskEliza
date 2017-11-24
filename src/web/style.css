@@ -22,14 +22,14 @@ body {
 }
 
 li.eliza_message {
-    background-color : #338B33;
-    color: #231456;
+    background-color : #0c1069;
+    color: white;
     font-style: italic;
     font-weight: bold;
 }
 
 li.user_message {
-    background-color: #69B169;
-    color: #231456;
+    background-color: #844da3;
+    color: white;
     font-weight: bold;
 }
