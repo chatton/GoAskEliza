@@ -131,8 +131,9 @@ The web server serves a html page (using [bootstrap](http://getbootstrap.com/)),
 
 # Misc.
 
-See this [Discord Bot](https://github.com/chatton/ElizaBot) that uses this Eliza web server.
-Sometimes this server is being hosted [Here](http://18.217.200.242:8080/)
+- See this [Discord Bot](https://github.com/chatton/ElizaBot) that uses this Eliza web server.
+
+- Sometimes this server is being hosted [Here](http://18.217.200.242:8080/)
 
 # References
 
