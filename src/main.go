@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -11,50 +10,42 @@ import (
 	"./pickers"
 )
 
-var el *eliza.Eliza
+// hold onto one instance of eliza per user.
+var elizas map[string]*eliza.Eliza
 
 type History struct {
 	Answers, Questions []string
 }
 
-func main() {
+func newEliza() *eliza.Eliza {
 	gen := generators.NewRegexGenerator("./data/pattern-responses.dat")
 	picker := pickers.NewPrefersNewPicker()
-	el = eliza.NewEliza(gen, picker)
+	return eliza.NewEliza(gen, picker)
+}
 
+func main() {
+	elizas = make(map[string]*eliza.Eliza)
 	http.HandleFunc("/ask", handleAsk)
-	http.HandleFunc("/history", handleHistory)
 	http.Handle("/", http.FileServer(http.Dir("./web")))
 	http.ListenAndServe(":8080", nil)
 }
 
 func handleAsk(w http.ResponseWriter, r *http.Request) {
 	if userHasQuestion(r) {
-		var userQuestion string
-		switch r.Method { // can handle both GET and POST requests.
-		case "GET":
-			userQuestion = r.URL.Query().Get("question") // extract GET parameter
-		case "POST":
-			userQuestion = r.FormValue("question") // extracts POST parameter
+		
+		userId := r.FormValue("id")
+		if _, ok := elizas[userId]; !ok {
+			elizas[userId] = newEliza()
 		}
 
-		answer := el.GoAsk(userQuestion) // passes the user question to the Eliza struct to get an answer for the question.
-		fmt.Fprintf(w, answer)           // write the answer back.
-	}
-}
+		usersEliza , _ := elizas[userId]
 
-func handleHistory(w http.ResponseWriter, r *http.Request) {
-	answers := el.Answers()
-	questions := el.Questions()
-
-	// I consulted this article on how to use json.Marshal correctly
-	// https://golangcode.com/json-encode-an-array-of-objects/
-	history := History{answers, questions}
-	historyJSON, err := json.Marshal(history)
-	if err != nil {
-		fmt.Println(err)
+		userQuestion := r.FormValue("question") // extracts POST parameter
+		fmt.Println(fmt.Sprintf("User Id[%s] Asked: %s", userId, userQuestion))
+		answer := usersEliza.GoAsk(userQuestion) // passes the user question to the Eliza struct to get an answer for the question.
+		fmt.Fprintf(w, answer)           // write the answer back.	
+		fmt.Println(fmt.Sprintf("Eliza: %s", answer))
 	}
-	fmt.Fprintf(w, "%s", historyJSON)
 }
 
 func userHasQuestion(r *http.Request) bool {

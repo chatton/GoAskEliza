@@ -1,20 +1,10 @@
+
+// choose a unique ID to identify this user talking to Eliza
+const id = Math.floor(Math.random() * 100000).toString();
+
 const keyCodes = {
     ENTER : 13
 }
-
-$(document).ready( () => {
-    // retain history on refresh by getting the conversation history from the server.
-    // history is lost when the server is restarted.
-    // send GET request using jQuery
-    $.get("/history", data => {
-        const history = JSON.parse(data); // history is a JSON string containing previous questions. 
-        for(var i = 0; i < history.Questions.length; i++){ // add all the past questions to maintain the state of the conversation.
-            addListItem("user_message", history.Questions[i]);
-            addListItem("eliza_message", history.Answers[i]);
-        }    
-    });
-});
-
 $('#user-input').on('keyup keypress', e => {
     // found method to supress the default behaviour of the enter key here.
     // https://stackoverflow.com/questions/11235622/jquery-disable-form-submit-on-enter
@@ -36,8 +26,7 @@ $('#user-input').on('keyup keypress', e => {
 
     // jQuery docs https://api.jquery.com/jquery.get/
     // use jQuery to send POST request
-    // ES6 syntax for {question:question}
-    $.post("/ask", {question}) // the question is a query parameter.
+    $.post("/ask", {question:question, id:id}) // the question is a query parameter.
      .done( data => { // this function gets called when the response is received.
         setTimeout(() => { // wait a little bit before displaying elizas answer to simulate a person typing
             addListItem("eliza_message", data); 
