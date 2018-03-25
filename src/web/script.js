@@ -39,7 +39,7 @@ $('#user-input').on('keyup keypress', e => {
 
 function addListItem(speaker, text){
     const direction = speaker == "user_message" ? "left" : "right";
-    const htmlString = "<li class=\"list-group-item " + speaker + "\"><p align=\"" + direction + "\">" + text + "</p></li>"
+    const htmlString = "<li class=\"list-group-item " + speaker + "\"><p class=\"list-group-item-text\" align=\"" + direction + "\">" + text + "</p></li>"
    $("#conversation").append(htmlString);
 
     // scroll down to see the newest messages any time the list is added.
