@@ -6,6 +6,17 @@ The course page can be found [here](https://data-representation.github.io/)
 
 # Setup Instructions
 
+## Docker
+You can run the eliza web server in a Docker container.
+
+```bash
+docker pull golang
+docker build . -t eliza
+docker run -p 8080:8080 eliza
+```
+
+## Manual
+
 Before you can run Eliza, you'll need to have [Go](https://golang.org/dl/) installed.
 When you do, you can clone this repository by opening up a terminal or command line and using the folling command.
 

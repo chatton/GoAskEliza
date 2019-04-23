@@ -21,11 +21,13 @@ func main() {
 	gen := generators.NewRegexGenerator("./data/pattern-responses.dat")
 	picker := pickers.NewPrefersNewPicker()
 	el = eliza.NewEliza(gen, picker)
-
 	http.HandleFunc("/ask", handleAsk)
 	http.HandleFunc("/history", handleHistory)
 	http.Handle("/", http.FileServer(http.Dir("./web")))
-	http.ListenAndServe(":8080", nil)
+	fmt.Println("Starting web server on port 8080...")
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		fmt.Println(err)
+	}
 }
 
 func handleAsk(w http.ResponseWriter, r *http.Request) {
