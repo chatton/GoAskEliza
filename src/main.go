@@ -1,14 +1,19 @@
 package main
 
 import (
+	"GoAskEliza/src/eliza"
+	"GoAskEliza/src/generators"
+	"GoAskEliza/src/pickers"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
+	"time"
 
-	"./eliza"
-	"./generators"
-	"./pickers"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var el *eliza.Eliza
@@ -18,9 +23,23 @@ type History struct {
 }
 
 func main() {
+
+	connectionStr, ok := os.LookupEnv("CONNECTION_STRING")
+	if !ok {
+		fmt.Println("no CONNECTION_STRING provided")
+		os.Exit(1)
+	}
+	ctx, _ := context.WithTimeout(context.TODO(), 2*time.Second)
+	// "mongodb://localhost:20000"
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionStr))
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
 	gen := generators.NewRegexGenerator("./data/pattern-responses.dat")
 	picker := pickers.NewPrefersNewPicker()
-	el = eliza.NewEliza(gen, picker)
+	el = eliza.NewEliza(gen, picker, client)
 	http.HandleFunc("/ask", handleAsk)
 	http.HandleFunc("/history", handleHistory)
 	http.Handle("/", http.FileServer(http.Dir("./web")))
@@ -40,15 +59,23 @@ func handleAsk(w http.ResponseWriter, r *http.Request) {
 			userQuestion = r.FormValue("question") // extracts POST parameter
 		}
 
-		answer := el.GoAsk(userQuestion) // passes the user question to the Eliza struct to get an answer for the question.
-		fmt.Fprintf(w, answer)           // write the answer back.
+		answer, err := el.GoAsk(userQuestion) // passes the user question to the Eliza struct to get an answer for the question.
+		if err != nil {
+			panic(err)
+		}
+		fmt.Fprintf(w, answer) // write the answer back.
 	}
 }
 
 func handleHistory(w http.ResponseWriter, r *http.Request) {
-	answers := el.Answers()
-	questions := el.Questions()
-
+	answers, err := el.Answers()
+	if err != nil {
+		panic(err)
+	}
+	questions, err := el.Questions()
+	if err != nil {
+		panic(err)
+	}
 	// I consulted this article on how to use json.Marshal correctly
 	// https://golangcode.com/json-encode-an-array-of-objects/
 	history := History{answers, questions}

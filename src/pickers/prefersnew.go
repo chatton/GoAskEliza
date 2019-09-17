@@ -1,10 +1,10 @@
 package pickers
 
 import (
+	"GoAskEliza/src/util"
 	"math/rand"
 	"time"
 
-	"../util"
 )
 
 //PrefersNewPicker will pick new answers if they are available.

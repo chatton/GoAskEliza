@@ -1,5 +1,12 @@
 package eliza
 
+import (
+	"context"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"time"
+)
+
 type Eliza struct {
 	// Eliza struct can be created using 2
 	// interfaces, this allows you to provide multiple
@@ -7,50 +14,100 @@ type Eliza struct {
 	// and how you pick them.
 	generator AnswerGenerator
 	picker    AnswerPicker
-	// keep track of past questions, use slices to maintain order.
-	history map[string][]string
+	client  *mongo.Client
 }
 
 // NewEliza creates a new Eliza instance with teh given answer generator
 // and answer picker.
-func NewEliza(generator AnswerGenerator, picker AnswerPicker) *Eliza {
-	eliza := Eliza{generator: generator, picker: picker, history: make(map[string][]string)}
-	eliza.history["questions"] = []string{}
-	eliza.history["answers"] = []string{}
+func NewEliza(generator AnswerGenerator, picker AnswerPicker, client *mongo.Client) *Eliza {
+	eliza := Eliza{generator: generator, picker: picker}
+	eliza.client = client
 	return &eliza
 }
 
-func (e *Eliza) saveQuestion(question string) {
-	e.appendToList("questions", question)
+func (e *Eliza) saveQuestion(question string) error {
+	ctx, _ := context.WithTimeout(context.TODO(), 2*time.Second)
+	col := e.client.Database("eliza").Collection("questions")
+	_, err := col.InsertOne(ctx, bson.M{
+		"q": question,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func (e *Eliza) saveAnswer(answer string) {
-	e.appendToList("answers", answer)
-}
-
-func (e *Eliza) appendToList(key, val string) {
-	e.history[key] = append(e.history[key], val)
+func (e *Eliza) saveAnswer(answer string) error {
+	ctx, _ := context.WithTimeout(context.TODO(), 2*time.Second)
+	col := e.client.Database("eliza").Collection("answers")
+	_, err := col.InsertOne(ctx, bson.M{
+		"a": answer,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // GoAsk is the "main" exported function Eliza is needed for.
 // it takes a single question in string format, and gives back
 // a single response also in string format.
-func (e *Eliza) GoAsk(question string) string {
-	e.saveQuestion(question)
+func (e *Eliza) GoAsk(question string) (string, error) {
+	if err := e.saveQuestion(question); err != nil {
+		return "", err
+	}
 	answers := e.generator.GenerateAnswers(question)
 	answer := e.picker.PickAnswer(answers)
-	e.saveAnswer(answer)
-	return answer
+
+	if err := e.saveAnswer(answer); err != nil {
+		return "", err
+	}
+
+	return answer, nil
 }
 
 // Questions returns a list of all asked questions
-func (e *Eliza) Questions() []string {
-	return []string(e.history["questions"])
+func (e *Eliza) Questions() ([]string, error) {
+	ctx, _ := context.WithTimeout(context.TODO(), 2*time.Second)
+	col := e.client.Database("eliza").Collection("questions")
+
+	cursor, err := col.Find(context.TODO(), bson.D{})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+	questions := make([]string, 0)
+	for cursor.Next(ctx) {
+		var result bson.M
+		err := cursor.Decode(&result)
+		if err != nil {
+			return nil, err
+		}
+		questions = append(questions, result["q"].(string))
+	}
+	return questions, nil
 }
 
 // Answers returns a list of all given answers.
-func (e *Eliza) Answers() []string {
-	return []string(e.history["answers"])
+func (e *Eliza) Answers() ([]string, error) {
+	ctx, _ := context.WithTimeout(context.TODO(), 2*time.Second)
+	col := e.client.Database("eliza").Collection("answers")
+
+	cursor, err := col.Find(context.TODO(), bson.D{})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+	answers := make([]string, 0)
+	for cursor.Next(ctx) {
+		var result bson.M
+		err := cursor.Decode(&result)
+		if err != nil {
+			return nil, err
+		}
+		answers = append(answers, result["a"].(string))
+	}
+	return answers, nil
 }
 
 // https://github.com/golang/go/wiki/CodeReviewComments#interfaces

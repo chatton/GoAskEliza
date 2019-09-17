@@ -1,9 +1,9 @@
 package generators
 
 import (
+	"GoAskEliza/src/util"
 	"math/rand"
 
-	"../util" // for the StringSet struct
 	// for file IO
 	"bufio"
 	"fmt"
