@@ -1,0 +1,43 @@
+---
+apiVersion: mongodb.com/v1
+kind: MongoDB
+metadata:
+  name: my-rs
+  namespace: mongodb
+spec:
+  members: 3
+  version: 4.0.6
+  project: my-project
+  credentials: my-credentials
+  type: ReplicaSet
+
+
+---
+apiVersion: mongodb.com/v1
+kind: MongoDBUser
+metadata:
+  name: eliza-user
+spec:
+  passwordSecretKeyRef:
+    name: my-password
+    key: password
+  username: "eliza"
+  db: "admin"
+  project: my-project
+  roles:
+    - db: "admin"
+      name: "readWriteAnyDatabase"
+    - db: "admin"
+      name: "dbAdminAnyDatabase"
+    - db: "admin"
+      name: "userAdminAnyDatabase"
+
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-password
+type: Opaque
+data:
+  password: bXktcGFzc3dvcmQ= # my-password

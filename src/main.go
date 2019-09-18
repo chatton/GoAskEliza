@@ -4,16 +4,10 @@ import (
 	"GoAskEliza/src/eliza"
 	"GoAskEliza/src/generators"
 	"GoAskEliza/src/pickers"
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
 	"strings"
-	"time"
-
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var el *eliza.Eliza
@@ -24,25 +18,25 @@ type History struct {
 
 func main() {
 
-	connectionStr, ok := os.LookupEnv("CONNECTION_STRING")
-	if !ok {
-		fmt.Println("no CONNECTION_STRING provided")
-		os.Exit(1)
-	}
-	ctx, _ := context.WithTimeout(context.TODO(), 2*time.Second)
-	// "mongodb://localhost:20000"
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionStr))
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+	//connectionStr, ok := os.LookupEnv("CONNECTION_STRING")
+	//if !ok {
+	//	fmt.Println("no CONNECTION_STRING provided")
+	//	os.Exit(1)
+	//}
+	//ctx, _ := context.WithTimeout(context.TODO(), 10*time.Second)
+	//client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionStr))
+	//if err != nil {
+	//	fmt.Println(err)
+	//	os.Exit(1)
+	//}
+	//
 
-	gen := generators.NewRegexGenerator("./data/pattern-responses.dat")
+	gen := generators.NewRegexGenerator("/data/pattern-responses.dat")
 	picker := pickers.NewPrefersNewPicker()
-	el = eliza.NewEliza(gen, picker, client)
+	el = eliza.NewEliza(gen, picker)
 	http.HandleFunc("/ask", handleAsk)
 	http.HandleFunc("/history", handleHistory)
-	http.Handle("/", http.FileServer(http.Dir("./web")))
+	http.Handle("/", http.FileServer(http.Dir("/web")))
 	fmt.Println("Starting web server on port 8080...")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		fmt.Println(err)

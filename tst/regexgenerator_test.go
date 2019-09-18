@@ -12,7 +12,7 @@ type TestData struct {
 }
 
 func TestRegexGeneratorResponses(t *testing.T) {
-	gen := generators.NewRegexGenerator("./data/pattern-responses.dat")
+	gen := generators.NewRegexGenerator("/data/pattern-responses.dat")
 	testData := []TestData{}
 
 	// test first response that's not a hello gives back the rude responses.

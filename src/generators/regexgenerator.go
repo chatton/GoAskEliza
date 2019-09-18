@@ -49,11 +49,11 @@ func NewRegexGenerator(responsePatternPath string) *RegexGenerator {
 	// store all these responses in memory. If you want to edit the files,
 	// the program will need to be re-built and run again.
 	// File IO is just done once, not every time the values are queried.
-	unwantedCharacters = readLines("./data/unwanted.dat")
-	genericAnswers = readLines("./data/generic-responses.dat")
-	rudeAnswers = readLines("./data/rude-answers.dat")
-	repeatAnswers = readLines("./data/repeat-answers.dat")
-	greetingPatterns = makePatternsCaseInsensitive(readLines("./data/greeting-patterns.dat"))
+	unwantedCharacters = readLines("/data/unwanted.dat")
+	genericAnswers = readLines("/data/generic-responses.dat")
+	rudeAnswers = readLines("/data/rude-answers.dat")
+	repeatAnswers = readLines("/data/repeat-answers.dat")
+	greetingPatterns = makePatternsCaseInsensitive(readLines("/data/greeting-patterns.dat"))
 	generator.responses = makeResponses(responsePatternPath)
 
 	// map used to map certain words from the question into an appropriate
@@ -72,7 +72,7 @@ func makePatternsCaseInsensitive(patterns []string) []string {
 }
 
 func makeReflectionMap() map[string]string {
-	lines := readLines("./data/reflectionmap.dat")
+	lines := readLines("/data/reflectionmap.dat")
 	reflectionMap := make(map[string]string)
 	for _, line := range lines {
 		keyVal := strings.Split(line, ";") // {"i;you", "i'd;you would" ... }

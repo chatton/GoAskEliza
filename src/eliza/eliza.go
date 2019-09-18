@@ -1,9 +1,9 @@
 package eliza
 
 import (
+	"GoAskEliza/src/util"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
 	"time"
 )
 
@@ -14,20 +14,19 @@ type Eliza struct {
 	// and how you pick them.
 	generator AnswerGenerator
 	picker    AnswerPicker
-	client  *mongo.Client
 }
 
 // NewEliza creates a new Eliza instance with teh given answer generator
 // and answer picker.
-func NewEliza(generator AnswerGenerator, picker AnswerPicker, client *mongo.Client) *Eliza {
+func NewEliza(generator AnswerGenerator, picker AnswerPicker) *Eliza {
 	eliza := Eliza{generator: generator, picker: picker}
-	eliza.client = client
 	return &eliza
 }
 
 func (e *Eliza) saveQuestion(question string) error {
-	ctx, _ := context.WithTimeout(context.TODO(), 2*time.Second)
-	col := e.client.Database("eliza").Collection("questions")
+	client := util.InitClient()
+	ctx, _ := context.WithTimeout(context.TODO(), 10*time.Second)
+	col := client.Database("eliza").Collection("questions")
 	_, err := col.InsertOne(ctx, bson.M{
 		"q": question,
 	})
@@ -38,8 +37,9 @@ func (e *Eliza) saveQuestion(question string) error {
 }
 
 func (e *Eliza) saveAnswer(answer string) error {
-	ctx, _ := context.WithTimeout(context.TODO(), 2*time.Second)
-	col := e.client.Database("eliza").Collection("answers")
+	client := util.InitClient()
+	ctx, _ := context.WithTimeout(context.TODO(), 10*time.Second)
+	col := client.Database("eliza").Collection("answers")
 	_, err := col.InsertOne(ctx, bson.M{
 		"a": answer,
 	})
@@ -68,8 +68,9 @@ func (e *Eliza) GoAsk(question string) (string, error) {
 
 // Questions returns a list of all asked questions
 func (e *Eliza) Questions() ([]string, error) {
-	ctx, _ := context.WithTimeout(context.TODO(), 2*time.Second)
-	col := e.client.Database("eliza").Collection("questions")
+	client := util.InitClient()
+	ctx, _ := context.WithTimeout(context.TODO(), 10*time.Second)
+	col := client.Database("eliza").Collection("questions")
 
 	cursor, err := col.Find(context.TODO(), bson.D{})
 	if err != nil {
@@ -90,9 +91,9 @@ func (e *Eliza) Questions() ([]string, error) {
 
 // Answers returns a list of all given answers.
 func (e *Eliza) Answers() ([]string, error) {
-	ctx, _ := context.WithTimeout(context.TODO(), 2*time.Second)
-	col := e.client.Database("eliza").Collection("answers")
-
+	client := util.InitClient()
+	ctx, _ := context.WithTimeout(context.TODO(), 10*time.Second)
+	col := client.Database("eliza").Collection("answers")
 	cursor, err := col.Find(context.TODO(), bson.D{})
 	if err != nil {
 		return nil, err
