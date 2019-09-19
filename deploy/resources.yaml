@@ -17,6 +17,7 @@ apiVersion: mongodb.com/v1
 kind: MongoDBUser
 metadata:
   name: eliza-user
+  namespace: mongodb
 spec:
   passwordSecretKeyRef:
     name: my-password
@@ -37,6 +38,7 @@ spec:
 apiVersion: v1
 kind: Secret
 metadata:
+  namespace: mongodb
   name: my-password
 type: Opaque
 data:

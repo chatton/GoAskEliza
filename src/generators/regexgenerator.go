@@ -195,7 +195,7 @@ func (gen *RegexGenerator) GenerateAnswers(question string) []string {
 			}
 
 			returnResponses := make([]string, len(response.responses)) // make our new slice to hold the returned responses.
-			for index, resp := range response.responses {              // go through the possible return values for that response
+			for index, resp := range response.responses { // go through the possible return values for that response
 				returnResponses[index] = constructAnswer(resp, matches)
 			}
 			return returnResponses // give back a slice of fully formed answers to the question.
@@ -223,7 +223,7 @@ func (gen *RegexGenerator) defaultAnswers() []string {
 	// provide some answers in the case of no regex match on the question.
 
 	returnAnswers := []string(genericAnswers) // don't want to modify the defaults. So we copy and add.
-	if !gen.pastQuestions.IsEmpty() {         // there is at least one past question to dig up.
+	if !gen.pastQuestions.IsEmpty() { // there is at least one past question to dig up.
 		// question that makes use of a random past question the user asked.
 		// intended to make the responses seem more like a real life conversation.
 		reflectOnPreviousQuestion := fmt.Sprintf("Earlier you said \"%s\", let's talk some more about that.",
