@@ -25,7 +25,7 @@ func NewEliza(generator AnswerGenerator, picker AnswerPicker) *Eliza {
 
 func (e *Eliza) saveQuestion(question string) error {
 	client := util.InitClient()
-	ctx, _ := context.WithTimeout(context.TODO(), 10*time.Second)
+	ctx, _ := context.WithTimeout(context.TODO(), 2*time.Second)
 	col := client.Database("eliza").Collection("questions")
 	_, err := col.InsertOne(ctx, bson.M{
 		"q": question,
@@ -38,7 +38,7 @@ func (e *Eliza) saveQuestion(question string) error {
 
 func (e *Eliza) saveAnswer(answer string) error {
 	client := util.InitClient()
-	ctx, _ := context.WithTimeout(context.TODO(), 10*time.Second)
+	ctx, _ := context.WithTimeout(context.TODO(), 2*time.Second)
 	col := client.Database("eliza").Collection("answers")
 	_, err := col.InsertOne(ctx, bson.M{
 		"a": answer,
@@ -69,7 +69,7 @@ func (e *Eliza) GoAsk(question string) (string, error) {
 // Questions returns a list of all asked questions
 func (e *Eliza) Questions() ([]string, error) {
 	client := util.InitClient()
-	ctx, _ := context.WithTimeout(context.TODO(), 10*time.Second)
+	ctx, _ := context.WithTimeout(context.TODO(), 2*time.Second)
 	col := client.Database("eliza").Collection("questions")
 
 	cursor, err := col.Find(context.TODO(), bson.D{})
@@ -92,7 +92,7 @@ func (e *Eliza) Questions() ([]string, error) {
 // Answers returns a list of all given answers.
 func (e *Eliza) Answers() ([]string, error) {
 	client := util.InitClient()
-	ctx, _ := context.WithTimeout(context.TODO(), 10*time.Second)
+	ctx, _ := context.WithTimeout(context.TODO(), 2*time.Second)
 	col := client.Database("eliza").Collection("answers")
 	cursor, err := col.Find(context.TODO(), bson.D{})
 	if err != nil {
